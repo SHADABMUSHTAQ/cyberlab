@@ -318,7 +318,11 @@ function renderDevice(d) {
   return `
   <div class="lab-device ${d.type} ${selectedDevice === d.id ? 'selected' : ''}" data-device="${d.id}" style="left:${d.x}px;top:${d.y}px">
     ${body}
-    <div class="device-label">${d.name}<small>${cat.category}</small></div>
+    <div class="device-label">
+      ${d.name}
+      <small>${cat.category}</small>
+      <button class="btn-micro-teardown" data-inspect-teardown="${d.id}" title="Inspect Hardware Teardown (Front & Rear 3D View)">🔬 3D View</button>
+    </div>
   </div>`;
 }
 
@@ -332,6 +336,14 @@ function renderStage() {
 }
 
 function bindDeviceEvents() {
+  $$('[data-inspect-teardown]').forEach(btn => {
+    btn.onpointerdown = e => {
+      e.stopPropagation();
+      e.preventDefault();
+      const dev = sim.getDevice(btn.dataset.inspectTeardown);
+      if (dev) ensurePanels().openTeardownModal(dev);
+    };
+  });
   $$('.lab-device').forEach(el => {
     el.onpointerdown = e => {
       if (e.target.closest('.port')) return;

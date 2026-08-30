@@ -4,7 +4,7 @@
 .lab-shell {
   max-width: none;
   padding: 0;
-  background: #f0f5f2;
+  background: #eff4f1;
   min-height: calc(100vh - 72px);
 }
 
@@ -211,10 +211,7 @@
   font-weight: 900;
   color: #8b7418;
 }
-.do-card b {
-  font-size: 12px;
-  color: #3f471e;
-}
+.do-card b { font-size: 12px; color: #3f471e; }
 
 .coach-tip {
   display: flex;
@@ -244,9 +241,7 @@
   margin-top: 14px;
 }
 
-.objectives {
-  margin-top: 20px;
-}
+.objectives { margin-top: 20px; }
 .objectives h4 {
   font-size: 11px;
   color: #8aa095;
@@ -279,9 +274,7 @@
   color: #2c6f4b;
   font-weight: 700;
 }
-.objective.done {
-  color: #1e8d58;
-}
+.objective.done { color: #1e8d58; }
 .objective.done .obj-dot {
   background: var(--green-100);
   border-color: var(--green-200);
@@ -303,7 +296,7 @@
   position: relative;
   min-height: calc(100vh - 136px);
   overflow: hidden;
-  background: linear-gradient(180deg, #eef5f0 0 24%, #d7e6dc 24% 25%, #f6faf7 25%);
+  background: linear-gradient(180deg, #eaf2ed 0 24%, #d4e3d9 24% 25%, #f5f9f6 25%);
 }
 
 /* DO THIS NOW Banner */
@@ -553,7 +546,6 @@
   50% { filter: drop-shadow(0 0 18px rgba(33, 174, 102, 0.75)); }
 }
 
-/* Metallic Chassis Base */
 .device-body {
   position: relative;
   border-radius: 6px;
@@ -564,7 +556,7 @@
   padding: 8px 10px;
 }
 
-/* Enterprise Rackmount Ears */
+/* Rack Ears */
 .rack-ear-left, .rack-ear-right {
   position: absolute;
   top: 0;
@@ -587,7 +579,6 @@
   border: 1px solid #28332e;
 }
 
-/* Device Labels */
 .device-label {
   padding: 5px 10px;
   min-width: 95px;
@@ -600,6 +591,10 @@
   color: var(--ink);
   text-align: center;
   margin-top: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
 }
 .device-label small {
   display: block;
@@ -608,6 +603,24 @@
   color: #89a093;
   margin-top: 1px;
 }
+.btn-micro-teardown {
+  border: 1px solid #c2e2cf;
+  background: #eaf8f0;
+  color: #176840;
+  border-radius: 6px;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 2px 6px;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: all 0.15s;
+}
+.btn-micro-teardown:hover {
+  background: #176840;
+  color: #fff;
+  border-color: #176840;
+  transform: scale(1.05);
+}
 .lab-device.focused .device-label {
   background: #1d9b5e;
   color: #fff;
@@ -615,7 +628,7 @@
 }
 .lab-device.focused .device-label small { color: #d5f1df; }
 
-/* 24-Port Managed Switch Faceplate */
+/* Switch Chassis */
 .lab-device.switch .device-body {
   height: 60px;
   background: linear-gradient(180deg, #2d3b36 0%, #1e2824 100%);
@@ -631,10 +644,7 @@
   margin-bottom: 5px;
   letter-spacing: 0.5px;
 }
-.switch-sys-leds {
-  display: flex;
-  gap: 3px;
-}
+.switch-sys-leds { display: flex; gap: 3px; }
 .sys-led {
   width: 4px;
   height: 4px;
@@ -643,13 +653,13 @@
   box-shadow: 0 0 4px #28c776;
 }
 
-/* Modular Edge Router Faceplate */
+/* Router Chassis */
 .lab-device.router .device-body {
   height: 60px;
   background: linear-gradient(180deg, #303d38 0%, #1b2420 100%);
 }
 
-/* Next-Gen Security Firewall Faceplate */
+/* Firewall Chassis */
 .lab-device.firewall .device-body {
   height: 60px;
   background: linear-gradient(180deg, #3a2b2b 0%, #221818 100%);
@@ -657,7 +667,7 @@
 }
 .lab-device.firewall .dev-brand { color: #ffb8b8; }
 
-/* Enterprise 2U Rack Server Faceplate */
+/* Server Chassis */
 .lab-device.server .device-body {
   width: 86px;
   height: 120px;
@@ -740,7 +750,7 @@
   bottom: 12px;
 }
 
-/* Authentic RJ45 Port Blocks & Dual LEDs */
+/* Port Strip & RJ45 Jacks */
 .port-strip {
   display: flex;
   gap: 4px;
@@ -753,10 +763,7 @@
   align-items: center;
   gap: 2px;
 }
-.port-dual-leds {
-  display: flex;
-  gap: 3px;
-}
+.port-dual-leds { display: flex; gap: 3px; }
 .mini-led {
   width: 3px;
   height: 3px;
@@ -771,9 +778,7 @@
   background: #f2c94c;
   animation: actBlink 0.4s infinite;
 }
-@keyframes actBlink {
-  50% { opacity: 0.2; }
-}
+@keyframes actBlink { 50% { opacity: 0.2; } }
 
 .port {
   width: 20px;
@@ -829,9 +834,7 @@
   right: 2px;
   top: 2px;
 }
-.port.console-port {
-  border-color: #8c7324;
-}
+.port.console-port { border-color: #8c7324; }
 
 /* Connection Status Tray */
 .connection-status {
@@ -1202,285 +1205,510 @@
 .port-state.up { color: var(--green-700); font-weight: 800; }
 .port-state.blocking { color: #d97706; font-weight: 800; }
 
-/* VLANs, Routing, ACLs & Wireshark UI */
-.vlan-list, .acl-list, .dns-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
-}
-.vlan-row, .acl-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  background: #fff;
-  font-size: 11px;
-}
-.vlan-badge {
-  background: #e0f2fe;
-  color: #0369a1;
-  font-weight: 800;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-size: 9px;
-}
-.vlan-form {
-  display: flex;
-  gap: 6px;
-  margin-top: 10px;
-}
-.vlan-form input {
-  border: 1px solid #d7e7dc;
-  border-radius: 8px;
-  padding: 8px;
-  font-size: 10px;
-}
-.acl-action {
-  font-size: 8px;
-  font-weight: 900;
-  padding: 3px 6px;
-  border-radius: 5px;
-}
-.acl-action.permit { background: #dcfce7; color: #166534; }
-.acl-action.deny { background: #fee2e2; color: #991b1b; }
+/* ==========================================================================
+   PHOTOREALISTIC 360° HARDWARE TEARDOWN MODAL STYLES
+   ========================================================================== */
 
-.route-table {
-  margin-top: 10px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  overflow: hidden;
-  font-size: 10px;
+.teardown-backdrop {
+  z-index: 120;
 }
-.route-head {
-  display: grid;
-  grid-template-columns: 35px 1fr 60px 50px;
-  padding: 7px 10px;
-  background: #eef5f1;
-  font-weight: 800;
-  color: #557264;
-  font-size: 8.5px;
-}
-.route-row {
-  display: grid;
-  grid-template-columns: 35px 1fr 60px 50px;
-  padding: 8px 10px;
-  border-top: 1px solid #eef5f1;
-  align-items: center;
-}
-.route-type {
-  font-weight: 900;
-  color: #1b7a4c;
-}
-
-/* Wireshark Packet Decode Viewer */
-.wireshark-viewer {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 10px;
-}
-.packet-layer {
-  border: 1px solid #d7e7dc;
-  border-radius: 10px;
-  background: #fff;
-  overflow: hidden;
-}
-.layer-head {
-  background: #f0f7f3;
-  padding: 7px 10px;
-  font-size: 10px;
-  font-weight: 800;
-  color: #173e2b;
-  border-bottom: 1px solid #e2ede6;
-}
-.layer-body {
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 10px;
-}
-.layer-body span { color: var(--muted); }
-.layer-body code {
-  font-family: ui-monospace, monospace;
-  color: #166534;
-  font-weight: 700;
-}
-.packet-placeholder {
-  text-align: center;
-  padding: 24px;
-  color: var(--muted);
-  font-size: 11px;
-}
-.packet-placeholder span { font-size: 32px; display: block; margin-bottom: 8px; }
-
-/* Network Form */
-.network-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 12px;
-}
-.network-form label span {
-  display: block;
-  font-size: 9px;
-  color: #668274;
-  margin-bottom: 4px;
-  font-weight: 700;
-}
-.network-form input {
-  width: 100%;
-  border: 1px solid #d7e7dc;
-  background: #fff;
-  border-radius: 10px;
-  padding: 9px 12px;
-  font-size: 11px;
-  outline: none;
-  font-family: ui-monospace, monospace;
-}
-.network-form input:focus {
-  border-color: #45ae72;
-  box-shadow: 0 0 0 3px rgba(69, 174, 114, 0.12);
-}
-
-/* Terminal Drawer */
-.terminal-drawer {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 82px;
-  max-width: 960px;
-  margin: 0 auto;
-  height: 270px;
-  background: #0c1813;
-  border: 1px solid #18352a;
-  border-radius: 18px 18px 0 0;
-  z-index: 32;
-  box-shadow: 0 -16px 35px rgba(20, 52, 36, 0.22);
-  overflow: hidden;
-  color: #dff6e7;
-  transform: translateY(calc(100% + 100px));
-  transition: transform 0.25s ease;
-}
-.terminal-drawer.open { transform: translateY(0); }
-.terminal-top {
-  height: 40px;
-  background: #173f2d;
-  border-bottom: 1px solid #274439;
-  display: flex;
-  align-items: center;
-  padding: 0 14px;
-  gap: 8px;
-}
-.term-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #497060;
-}
-.term-dot:nth-child(1) { background: #f2c94c; }
-.terminal-top b { font-size: 11px; margin-left: 6px; }
-.terminal-top button {
-  margin-left: auto;
-  border: 0;
-  background: transparent;
-  color: #9bb3a9;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.terminal-content {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  height: calc(100% - 40px);
-}
-.terminal-pane {
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-}
-.terminal-output {
-  flex: 1;
-  height: 155px;
+.teardown-card {
+  width: min(940px, 94vw);
+  max-height: 90vh;
   overflow-y: auto;
-  white-space: pre-wrap;
-  font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
-  color: #bfe6cb;
+  background: #111815;
+  border: 1px solid #283d33;
+  color: #e5f5ec;
+  padding: 24px 28px;
 }
-.terminal-input-row {
+
+.teardown-head {
   display: flex;
   align-items: center;
-  gap: 8px;
-  border-top: 1px solid #21392f;
-  padding-top: 8px;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #1f3028;
 }
-.prompt { font: 11px ui-monospace, monospace; color: #62d58a; }
-.terminal-input {
-  flex: 1;
-  border: 0;
-  outline: 0;
-  background: transparent;
+.teardown-head h2 {
   color: #fff;
-  font: 11px ui-monospace, monospace;
+  margin: 2px 0 0;
+  font-size: 20px;
 }
-.term-run {
-  border: 0;
-  border-radius: 8px;
-  background: var(--yellow-500);
-  color: #27351d;
-  padding: 6px 12px;
-  font-size: 10px;
-  font-weight: 900;
-  cursor: pointer;
+.teardown-head p {
+  color: #8da498;
+  font-size: 11px;
+  margin: 2px 0 0;
 }
-.command-help {
-  border-left: 1px solid #274439;
-  padding: 12px;
-  overflow-y: auto;
-}
-.command-help h4 {
-  font-size: 9px;
-  color: #8ea89e;
-  text-transform: uppercase;
-  letter-spacing: .8px;
-  margin: 0 0 8px;
-}
-.cmd-chip {
+.teardown-head-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-  width: 100%;
-  text-align: left;
-  border: 1px solid #28483b;
-  background: #11251d;
-  color: #cae6d4;
-  border-radius: 8px;
-  padding: 7px 10px;
-  margin: 5px 0;
-  font: 10px ui-monospace, monospace;
+  gap: 10px;
+}
+.side-toggle-btn {
+  background: #1e352b;
+  color: #48d58e;
+  border: 1px solid #2d5543;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 8px 14px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all 0.2s ease;
 }
-.cmd-chip span { color: #31a96b; }
-.cmd-chip:hover {
-  border-color: #4fc77d;
-  background: #163628;
+.side-toggle-btn:hover {
+  background: #27493a;
+  color: #fff;
 }
-.command-explain {
-  font-size: 9px;
-  color: #8ea89e;
-  line-height: 1.45;
+
+.teardown-view-container {
+  padding: 24px 0;
+  display: flex;
+  justify-content: center;
+  perspective: 1000px;
+}
+.chassis-viewer {
+  width: 100%;
+  max-width: 860px;
+  background: #090e0c;
+  border-radius: 12px;
+  border: 2px solid #21352c;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+/* Photorealistic Chassis Base */
+.photorealistic-chassis {
+  position: relative;
+  width: 100%;
+  min-height: 100px;
+  background: linear-gradient(180deg, #384941 0%, #1f2c26 50%, #131c18 100%);
+  border: 2px solid #0e1512;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 12px 18px;
+}
+
+.chassis-rack-ear {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14px;
+  background: #17211d;
+  border: 1px solid #0d1411;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+.chassis-rack-ear.left { left: -15px; border-radius: 4px 0 0 4px; }
+.chassis-rack-ear.right { right: -15px; border-radius: 0 4px 4px 0; }
+.screw {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #506159;
+  border: 1px solid #1f2824;
+}
+
+/* Switch Front Realistic Panel */
+.switch-front-panel, .switch-rear-panel, .router-front-panel, .router-rear-panel, .server-bezel, .server-rear-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+
+.brand-silkscreen {
+  font: 900 9px/1.2 Arial, sans-serif;
+  letter-spacing: 1px;
+  color: #c9dbd3;
+}
+.mode-led-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-top: 8px;
+}
+.mode-btn {
+  border: 1px solid #4a6357;
+  background: #1a2722;
+  color: #a8bfb5;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 7.5px;
+  font-weight: 800;
+}
+.mode-leds {
+  display: flex;
+  gap: 6px;
+  font-size: 7px;
+  color: #7d968b;
+  font-weight: 700;
+}
+.mode-leds span { display: flex; align-items: center; gap: 2px; }
+.mode-leds i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #28c776;
+  display: inline-block;
+  box-shadow: 0 0 3px #28c776;
+}
+
+/* RJ45 Bank Blocks */
+.rj45-bank-container {
+  display: flex;
+  gap: 14px;
+}
+.rj45-block {
+  background: #0f1613;
+  border: 1px solid #283c32;
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+.block-label {
+  display: block;
+  font-size: 6.5px;
+  font-weight: 800;
+  color: #7b9489;
+  letter-spacing: .5px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+.rj45-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+.realistic-rj45 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.realistic-rj45 .rj45-leds {
+  display: flex;
+  gap: 4px;
+}
+.realistic-rj45 .led-g {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #475a51;
+}
+.realistic-rj45.link-active .led-g {
+  background: #28c776;
+  box-shadow: 0 0 4px #28c776;
+}
+.realistic-rj45 .led-a {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #475a51;
+}
+.realistic-rj45.link-active .led-a {
+  background: #f2c94c;
+}
+.rj45-jack {
+  width: 22px;
+  height: 18px;
+  background: #060a08;
+  border: 1.5px solid #4a6357;
+  border-radius: 2px;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+.rj45-jack.console { border-color: #92751f; }
+.realistic-rj45 small {
+  font-size: 6.5px;
+  color: #8da398;
+  font-weight: 700;
+}
+
+/* SFP+ Optical Cages */
+.sfp-uplink-block {
+  background: #0f1613;
+  border: 1px solid #283c32;
+  border-radius: 4px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sfp-cages {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+.sfp-cage {
+  width: 24px;
+  height: 22px;
+  background: #17211d;
+  border: 1.5px solid #6b8277;
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+.sfp-cage small { font-size: 6px; color: #a1b8ad; }
+.sfp-latch {
+  position: absolute;
+  top: 2px;
+  width: 14px;
+  height: 3px;
+  background: #3e5349;
+  border-radius: 1px;
+}
+
+/* Hot-Swap Power Supplies (Rear) */
+.psu-block-container {
+  display: flex;
+  gap: 12px;
+}
+.hot-swap-psu {
+  width: 140px;
+  height: 70px;
+  background: #17241f;
+  border: 1.5px solid #364d42;
+  border-radius: 4px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.psu-label { font-size: 7px; font-weight: 800; color: #a3bcb0; }
+.psu-handle {
+  width: 24px;
+  height: 6px;
+  background: #c2410c;
+  border-radius: 2px;
+}
+.c14-inlet {
+  width: 26px;
+  height: 18px;
+  background: #090e0c;
+  border: 1px solid #4a6357;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 4px;
+}
+.c14-inlet span {
+  width: 2px;
+  height: 6px;
+  background: #8aa095;
+}
+.psu-led { font-size: 7px; color: #28c776; font-weight: 800; }
+
+/* Cooling Fans (Rear) */
+.fan-grilles {
+  display: flex;
+  gap: 8px;
+}
+.fan-grille {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #090e0c;
+  border: 2px solid #34483f;
+  display: grid;
+  place-items: center;
+}
+.fan-blades {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px dashed #4e6b5c;
+  animation: fanSpin 2s linear infinite;
+}
+@keyframes fanSpin { 100% { transform: rotate(360deg); } }
+
+/* Modular Router NIM Slots */
+.nim-slot-container {
+  display: flex;
+  gap: 12px;
+}
+.nim-slot {
+  width: 140px;
+  height: 52px;
+  background: #141e1a;
+  border: 1.5px solid #2e4439;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  position: relative;
+}
+.nim-label {
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  font-size: 6px;
+  font-weight: 800;
+  color: #6d887b;
+}
+.thumbscrew {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #738a7f;
+  border: 1px solid #24302a;
+}
+.blank-plate {
+  font-size: 7.5px;
+  color: #4b6658;
+  font-weight: 800;
+}
+
+/* 2U Server Bezel & SAS Caddies */
+.server-front-2u {
+  min-height: 140px;
+  background: linear-gradient(180deg, #2b3933 0%, #16201b 100%);
+}
+.server-bezel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+}
+.server-brand-badge {
+  font: 900 10px Arial, sans-serif;
+  color: #d1e2da;
+  letter-spacing: 1px;
+}
+.sas-drive-bay-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.sas-drive-caddy {
+  height: 36px;
+  background: #0b110e;
+  border: 1.5px solid #2d4237;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+.caddy-handle {
+  width: 16px;
+  height: 6px;
+  background: #1f3028;
+  border: 1px solid #4a6357;
+  border-radius: 2px;
+}
+.drive-leds { display: flex; gap: 3px; }
+.drive-leds .led-g {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #28c776;
+  box-shadow: 0 0 4px #28c776;
+}
+.drive-leds .led-a {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f2c94c;
+}
+.sas-drive-caddy small { font-size: 6.5px; color: #7f998d; font-weight: 800; }
+
+.server-control-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.server-power-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #17241f;
+  border: 2px solid #28c776;
+  color: #28c776;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(40, 199, 118, 0.4);
+}
+
+/* Teardown Info Grid */
+.teardown-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+.teardown-spec-card, .teardown-hotspot-card {
+  background: #17221e;
+  border: 1px solid #23352d;
+  border-radius: 14px;
+  padding: 16px;
+}
+.teardown-spec-card h4, .teardown-hotspot-card h4 {
+  font-size: 12px;
+  color: #48d58e;
+  margin: 0 0 12px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.hotspot-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hotspot-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #283d33;
+  background: #111a16;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.hotspot-item:hover, .hotspot-item.active {
+  border-color: #3dd686;
+  background: #1b2e25;
+}
+.hotspot-num {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: #1f382d;
+  color: #48d58e;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.hotspot-item b {
+  display: block;
+  font-size: 11px;
+  color: #e5f5ec;
+}
+.hotspot-item p {
+  font-size: 10px;
+  color: #8da498;
+  margin: 2px 0 0;
+  line-height: 1.4;
 }
 
 /* Modals */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(8, 38, 28, 0.52);
+  background: rgba(8, 38, 28, 0.62);
   backdrop-filter: blur(6px);
   z-index: 100;
   display: grid;
@@ -1488,10 +1716,7 @@
   padding: 20px;
   animation: fadeIn 0.2s ease;
 }
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-card {
   background: #fff;
@@ -1501,16 +1726,8 @@
   box-shadow: 0 30px 80px rgba(7, 52, 36, 0.28);
   padding: 28px;
 }
-.modal-card h2 {
-  font-size: 22px;
-  color: var(--ink);
-  margin: 0 0 8px;
-}
-.modal-card p {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.55;
-}
+.modal-card h2 { font-size: 22px; color: var(--ink); margin: 0 0 8px; }
+.modal-card p { font-size: 13px; color: var(--muted); line-height: 1.55; }
 
 .orientation-art {
   height: 110px;
@@ -1543,11 +1760,7 @@
   color: #24452f;
 }
 
-.orientation-list {
-  display: grid;
-  gap: 8px;
-  margin: 14px 0;
-}
+.orientation-list { display: grid; gap: 8px; margin: 14px 0; }
 .orientation-item {
   display: flex;
   gap: 10px;
@@ -1632,6 +1845,7 @@
   .lab-layout { grid-template-columns: 280px minmax(0, 1fr); }
   .rack { transform: scale(0.85); transform-origin: top right; }
   .inspector { width: 290px; }
+  .teardown-info-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {

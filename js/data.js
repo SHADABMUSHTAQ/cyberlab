@@ -19,12 +19,20 @@ export const DEVICE_CATALOG={
     layer:'Layers 1–7 (Application to Physical)',
     definition:'An end-user workstation running network applications. Generates Layer 7 data, encapsulates it into TCP/IP packets, and transmits Layer 2 Ethernet frames onto the local area network.',
     specs:{
-      'NIC':'1 × Intel 1000BASE-T Gigabit Ethernet',
+      'Form Factor':'Minitower Desktop Workstation',
+      'NIC':'1 × Intel I219-LM 1000BASE-T Gigabit Ethernet',
       'MAC Address':'00:1A:2B:XX:XX:XX (Locally Administered)',
       'IP Stack':'IPv4 / IPv6 Dual Stack',
+      'Power Supply':'300W 80-Plus Gold Active PFC',
       'OS':'CyberLab Enterprise Linux / Workstation',
       'Role':'End-user Host & Network Client'
     },
+    hotspots:[
+      {name:'Intel Gigabit NIC Port',desc:'10/100/1000BASE-T RJ45 jack with integrated magnetics and Dual Link/Activity LEDs.'},
+      {name:'Power Supply Rocker Switch',desc:'AC mains I/O isolation switch for the 300W internal power supply.'},
+      {name:'Motherboard I/O Shield',desc:'Houses display outputs (DisplayPort/HDMI), USB 3.2 Gen 2 ports, and HD audio.'},
+      {name:'Chassis Cooling Exhaust Fan',desc:'92mm PWM variable-speed cooling fan expelling warm air from the CPU heatsink.'}
+    ],
     ports:[
       {id:'eth0',label:'Eth0',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'Integrated Gigabit Ethernet Network Interface'}
     ]
@@ -36,16 +44,27 @@ export const DEVICE_CATALOG={
     icon:'▤',
     category:'Layer 2 Infrastructure',
     layer:'Layer 2 (Data Link)',
-    definition:'An enterprise Layer 2 switch that connects devices in a LAN. Maintains a CAM (Content Addressable Memory) table to map MAC addresses to physical ports, enabling dedicated collision-free microsegmentation.',
+    definition:'An enterprise 1U Layer 2 switch connecting LAN endpoints. Features 24 Gigabit RJ45 ports, 2 SFP+ 10G uplinks, a CAM table for dedicated collision-free microsegmentation, and dual hot-swappable power supplies.',
     specs:{
-      'Ports':'24 × 10/100/1000BASE-T + 2 × 10G SFP+',
-      'Switching Capacity':'128 Gbps Non-Blocking Wire-Speed',
-      'Forwarding Rate':'95.2 Mpps',
-      'MAC Table Size':'16,000 Entries (CAM)',
-      'VLAN Support':'802.1Q (Up to 4094 VLANs)',
-      'Loop Prevention':'IEEE 802.1w Rapid Spanning Tree Protocol (RSTP)',
-      'Management':'Cisco IOS-style CLI (Console / Telnet / SSH)'
+      'Form Factor':'1U 19-Inch Rackmount Steel Chassis',
+      'Ports':'24 × 10/100/1000BASE-T + 2 × 10G SFP+ Optical Cages',
+      'Switching Capacity':'128 Gbps Non-Blocking Wire-Speed Fabric',
+      'Forwarding Rate':'95.2 Mpps Hardware Forwarding',
+      'MAC Table Size':'16,000 Entries (CAM Memory)',
+      'VLAN Support':'IEEE 802.1Q (Up to 4094 VLAN IDs)',
+      'Spanning Tree':'IEEE 802.1w Rapid Spanning Tree Protocol (RSTP)',
+      'Power Supplies':'Dual Hot-Swappable 350W Redundant AC PSUs',
+      'Cooling':'3 × Variable-Speed Redundant Fan Modules (Front-to-Back Airflow)'
     },
+    hotspots:[
+      {name:'Port Block 1–12 (Bank 1)',desc:'12 × Gold-plated 8P8C RJ45 jacks with integrated pulse transformers and dual Link/Act LEDs.'},
+      {name:'Port Block 13–24 (Bank 2)',desc:'12 × High-density Gigabit Ethernet ports supporting 802.3at PoE+ power delivery.'},
+      {name:'10G SFP+ Transceiver Cages',desc:'Dual Small Form-factor Pluggable cages for 10 Gigabit multi-mode/single-mode fiber optic uplinks.'},
+      {name:'Mode Select Button & LED Matrix',desc:'Toggles port LED display between STAT (Link/Activity), SPEED (10/100/1000), DUPLEX, and PoE power.'},
+      {name:'RJ45 Serial Console Port',desc:'RS-232 serial management port (9600-8-N-1) for out-of-band CLI configuration.'},
+      {name:'Dual Hot-Swap Power Supplies (Rear)',desc:'350W 1+1 redundant AC power modules with locking extraction levers and status LEDs.'},
+      {name:'Redundant Exhaust Fan Tray (Rear)',desc:'Three 40mm brushless fans providing front-to-back chassis cooling.'}
+    ],
     ports:[
       ...Array.from({length:8},(_,i)=>({id:`gi0/${i+1}`,label:`Gi0/${i+1}`,type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:`Gigabit Ethernet Access/Trunk Port ${i+1}`})),
       {id:'console',label:'Console',type:'console',speed:'9600 baud',connector:'RJ45/Serial',desc:'Out-of-Band RS-232 Serial Management Console'}
@@ -58,15 +77,24 @@ export const DEVICE_CATALOG={
     icon:'◈',
     category:'Layer 3 Infrastructure',
     layer:'Layer 3 (Network)',
-    definition:'A Layer 3 routing appliance that interconnects distinct IP subnets and WANs. Evaluates IP destination headers against its routing table, decrements TTL, rewrites Layer 2 Ethernet headers, and forwards packets toward their destination.',
+    definition:'A 1U modular Layer 3 edge router that connects distinct IP subnets and WANs. Features hardware-accelerated routing, dynamic routing protocols (OSPF/BGP), and modular Network Interface Module (NIM) expansion slots.',
     specs:{
-      'Interfaces':'4 × Routed Gigabit Ethernet (G0/0 to G0/3)',
-      'Forwarding Rate':'1.5 Mpps Hardware Accelerated',
-      'Routing Protocols':'Static, Connected, OSPFv2 (Area 0), RIPv2',
-      'NAT/PAT':'Dynamic Overload NAT (Port Address Translation)',
-      'Security':'Stateful Firewall Inspection & Access Control Lists (ACLs)',
-      'Management':'CLI Console / SSHv2'
+      'Form Factor':'1U 19-Inch Rackmount Metal Chassis',
+      'Interfaces':'4 × Routed GigabitEthernet (G0/0 to G0/3)',
+      'Expansion':'2 × Network Interface Module (NIM) Slots with Thumbscrews',
+      'Forwarding Rate':'1.5 Mpps Hardware-Accelerated Routing',
+      'Routing Protocols':'Static, Connected, OSPFv2 (Area 0), BGP, RIPv2',
+      'NAT / PAT':'Stateful Port Address Translation (NAT Overload)',
+      'Management':'RJ45 Console + AUX Port + Dedicated Gigabit MGMT Interface',
+      'Power':'Internal Universal AC Power Supply (100–240V)'
     },
+    hotspots:[
+      {name:'GigabitEthernet 0/0 (LAN Gateway)',desc:'Primary routed Layer 3 interface acting as the Default Gateway for the local subnet.'},
+      {name:'GigabitEthernet 0/1 (WAN Interface)',desc:'Public-facing routed interface with NAT Overload enabled for Internet connectivity.'},
+      {name:'NIM Expansion Slot 0 & 1',desc:'Removable blank metal faceplates with captive thumbscrews for T1/E1, Serial, or 4G LTE modules.'},
+      {name:'System / RPS Status LEDs',desc:'Multicolor LEDs indicating Power, System Boot State, and Redundant Power Supply status.'},
+      {name:'Grounding Lug & Rocker Switch (Rear)',desc:'Dual-hole chassis ground lug and main AC power toggle switch.'}
+    ],
     ports:[
       {id:'g0/0',label:'G0/0',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'GigabitEthernet 0/0 (LAN Gateway Interface)'},
       {id:'g0/1',label:'G0/1',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'GigabitEthernet 0/1 (WAN / Remote Interface)'},
@@ -77,20 +105,28 @@ export const DEVICE_CATALOG={
   },
   firewall:{
     id:'firewall',
-    name:'Next-Generation Network Security Firewall',
+    name:'Next-Generation Security Firewall',
     short:'Firewall',
     icon:'⬢',
     category:'Security Appliance',
     layer:'Layers 3–7 (Network to Application)',
-    definition:'A stateful security gateway that enforces traffic boundaries between security zones (Inside, Outside, DMZ). Inspects Layer 3/4 packet headers and Layer 7 protocols, maintains a state table of established connections, and blocks unauthorized traffic.',
+    definition:'A dedicated stateful security gateway enforcing granular policies between security zones (Inside, Outside, DMZ). Features hardware crypto acceleration, stateful connection tracking, and deep packet inspection.',
     specs:{
+      'Form Factor':'1U 19-Inch High-Density Security Appliance',
       'Security Zones':'Inside (Trust), Outside (Untrust), DMZ (Public Services)',
-      'Inspection':'Stateful Packet Inspection (SPI) & Deep Packet Inspection',
-      'Throughput':'2.5 Gbps Stateful Firewall Throughput',
-      'Policy':'Ordered Access Control Lists (ACLs) with Implicit Deny',
-      'NAT Engine':'Source NAT (Inside to Outside), Destination NAT (Port Forwarding)',
-      'Management':'Dedicated Management Port & CLI Console'
+      'Throughput':'2.5 Gbps Stateful Firewall / 1.2 Gbps Threat Prevention',
+      'Inspection':'Stateful Packet Inspection (SPI) & Layer 7 Application Control',
+      'Security Policy':'Ordered Access Control Lists (ACLs) with Implicit Deny',
+      'NAT Engine':'Dynamic Source NAT (Inside to Outside), Static Destination NAT',
+      'Management':'Dedicated OOB Management Port + Serial Console'
     },
+    hotspots:[
+      {name:'Inside (Trust) Zone Port',desc:'Gigabit Ethernet interface connecting to the secure internal corporate network.'},
+      {name:'Outside (Untrust) Zone Port',desc:'Edge interface connected to the untrusted WAN / Internet upstream provider.'},
+      {name:'DMZ Zone Port',desc:'Isolated perimeter network interface hosting public-facing web/DNS servers.'},
+      {name:'High-Availability (HA) Sync Port',desc:'Dedicated heartbeat interface for active/standby stateful failover clustering.'},
+      {name:'Threat Status LED Bar',desc:'Visual diagnostic bar indicating active policy enforcement and blocked intrusion attempts.'}
+    ],
     ports:[
       {id:'inside',label:'Inside (Trust)',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'Inside LAN Trusted Security Zone Interface'},
       {id:'outside',label:'Outside (Untrust)',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'Outside WAN Untrusted Security Zone Interface'},
@@ -105,14 +141,24 @@ export const DEVICE_CATALOG={
     icon:'▥',
     category:'Host Endpoint',
     layer:'Layers 1–7 (Application to Physical)',
-    definition:'An enterprise Linux server hosting network services including DHCP daemons, DNS resolvers, Web HTTP/HTTPS servers, and file repositories. Equipped with multi-homed Gigabit network adapters.',
+    definition:'A 2U enterprise dual-socket server hosting essential core services (DHCP daemon, DNS resolver, Web HTTP/HTTPS). Equipped with 8 hot-swap SAS drive caddies, redundant power supplies, and multi-homed Gigabit NICs.',
     specs:{
-      'NICs':'2 × Intel I350 Gigabit Ethernet (Eth0, Eth1)',
-      'Services':'DHCP Server (isc-dhcpd), DNS (BIND9), HTTP (nginx)',
-      'CPU / Memory':'8 Cores / 32 GB ECC DDR4',
-      'Storage':'8 × Hot-Swap SAS SSD Array (RAID-10)',
-      'Role':'Enterprise Core Network Services Provider'
+      'Form Factor':'2U 19-Inch Enterprise Server Chassis',
+      'Processors':'Dual Intel Xeon Silver 4314 (32 Total vCPUs)',
+      'Memory':'64 GB DDR4-3200 ECC Registered RAM',
+      'Storage Array':'8 × 1.92TB Enterprise SAS SSDs (Hardware RAID-10)',
+      'Network Adapters':'Quad Intel I350 1000BASE-T Gigabit Ethernet Ports',
+      'Remote Management':'Dedicated IPMI 2.0 / iLO / iDRAC Port with Web GUI',
+      'Power Supplies':'Dual 750W Titanium Hot-Swap 1+1 Redundant PSUs'
     },
+    hotspots:[
+      {name:'8 × Hot-Swap SAS Drive Caddies',desc:'Tool-less drive trays with dual status LEDs (Green = Online, Amber = Activity/Rebuild).'},
+      {name:'Power Button with Blue LED Ring',desc:'Momentary power switch with integrated system power status and UID locator light.'},
+      {name:'Diagnostic USB & VGA Port',desc:'Front crash-cart interface for direct local KVM console administration.'},
+      {name:'Quad 10GbE Network Adapter (Rear)',desc:'Four enterprise PCIe network interfaces for service load balancing and VLAN teaming.'},
+      {name:'Dedicated Out-of-Band IPMI Port (Rear)',desc:'Dedicated 100BASE-TX port for lights-out server telemetry, power control, and remote KVM.'},
+      {name:'Dual 750W Titanium PSUs (Rear)',desc:'Hot-pluggable power supplies supporting AC line redundancy.'}
+    ],
     ports:[
       {id:'eth0',label:'Eth0',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'Primary Service Network Adapter'},
       {id:'eth1',label:'Eth1',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'Secondary / Backup Network Adapter'}
@@ -125,13 +171,19 @@ export const DEVICE_CATALOG={
     icon:'⌁',
     category:'Wireless Infrastructure',
     layer:'Layer 2 (Data Link)',
-    definition:'A wireless access point bridging 802.11ax Wi-Fi wireless clients onto the wired 802.3 Ethernet LAN infrastructure.',
+    definition:'A ceiling-mount dual-band Wi-Fi 6 access point. Bridges wireless 802.11ax clients onto the wired 802.3 Ethernet LAN infrastructure with PoE+ power delivery.',
     specs:{
-      'Uplink':'1 × Gigabit Ethernet (PoE+ 802.3at)',
-      'Wireless':'Dual-Band Wi-Fi 6 (2.4 GHz + 5 GHz 4x4 MU-MIMO)',
+      'Form Factor':'Low-Profile Ceiling / Wall Mount Saucer Dome',
+      'Uplink':'1 × 2.5G / 1G Multigigabit RJ45 Port (802.3at PoE+)',
+      'Radios':'Dual-Band Wi-Fi 6 (2.4 GHz 4x4 + 5 GHz 4x4 MU-MIMO)',
       'Max PHY Rate':'4.8 Gbps Aggregate Wireless Throughput',
-      'Security':'WPA3-Enterprise / 802.1X'
+      'Status Light':'Multi-Color Halo LED Ring (Green = Online, Blue = Active, Amber = Boot)'
     },
+    hotspots:[
+      {name:'PoE+ Gigabit Uplink Port (Rear)',desc:'Receives both 1 Gbps Ethernet data and 30W DC electrical power over a single Cat6 cable.'},
+      {name:'Multi-Color Halo Status LED',desc:'360° ring light providing immediate visual health and client association status.'},
+      {name:'Kensington Lock & Mounting Bracket',desc:'Reinforced metal twist-lock plate for ceiling grid installation.'}
+    ],
     ports:[
       {id:'eth0',label:'Eth0 (PoE+)',type:'ethernet',speed:'1 Gbps',connector:'RJ45',desc:'PoE+ Gigabit Ethernet Uplink Port'}
     ]
@@ -143,13 +195,19 @@ export const DEVICE_CATALOG={
     icon:'⠿',
     category:'Passive Physical Layer',
     layer:'Layer 1 (Physical)',
-    definition:'A passive rackmount patch bay organizing structured Cat6 horizontal building cabling, providing front-facing 8P8C modular jacks for patch cords.',
+    definition:'A 1U 19-inch structured cabling patch panel organizing permanent horizontal building copper cables. Features 24 numbered 8P8C modular jacks on the front and 110-IDC punchdown wiring blocks on the rear.',
     specs:{
-      'Ports':'24 × Cat6 RJ45 Unshielded Twisted Pair (UTP)',
-      'Wiring Standard':'TIA/EIA-568-B Compliant',
-      'Bandwidth':'250 MHz (Supports 1000BASE-T Gigabit Ethernet)',
-      'Active Power':'None (Passive Layer 1 Termination)'
+      'Form Factor':'1U 19-Inch Rackmount Metal Patch Bay',
+      'Ports':'24 × Unshielded Twisted Pair (UTP) Cat6 RJ45 Jacks',
+      'Wiring Standard':'TIA/EIA-568-A and TIA/EIA-568-B Color-Coded Blocks',
+      'Bandwidth':'250 MHz (Certified for 1000BASE-T Gigabit Ethernet)',
+      'Cable Management':'Rear Strain-Relief Cable Tie Bar'
     },
+    hotspots:[
+      {name:'24 × Numbered RJ45 Jacks (Front)',desc:'Gold-plated 8P8C modular jacks with white writable port identification labels.'},
+      {name:'110-IDC Punchdown Blocks (Rear)',desc:'Gas-tight insulation displacement contacts color-coded for 4-pair solid copper wire termination.'},
+      {name:'Cable Strain Relief Bar (Rear)',desc:'Heavy-duty steel support bar with velcro tie points to prevent cable sagging.'}
+    ],
     ports:Array.from({length:8},(_,i)=>({id:`jack${i+1}`,label:`Jack ${i+1}`,type:'ethernet',speed:'Passive',connector:'RJ45',desc:`Horizontal Cable Termination Jack ${i+1}`}))
   }
 };

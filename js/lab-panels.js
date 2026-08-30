@@ -46,6 +46,11 @@ export function createPanels(ctx) {
       renderInspector();
     });
     
+    // Launch Photorealistic Teardown Modal
+    root.querySelector('[data-action="openTeardown"]')?.addEventListener('click', () => {
+      openTeardownModal(d);
+    });
+
     // Port inspection clicks
     root.querySelectorAll('[data-inspect-port]').forEach(b => b.onclick = () => {
       ctx.record('inspectPort', `${d.id}:${b.dataset.inspectPort}`);
@@ -99,6 +104,29 @@ export function createPanels(ctx) {
   }
 
   function renderTabBody(d, cat, cfg, tab) {
+    if (tab === 'overview') {
+      return `
+      <div class="device-profile enterprise-profile">
+        <div class="device-profile-icon">${cat.icon}</div>
+        <div class="profile-meta">
+          <span class="category-pill">${cat.category}</span>
+          <h4>${cat.name}</h4>
+          <p>MAC: <code>${d.mac || '00:1a:2b:00:00:00'}</code></p>
+        </div>
+      </div>
+      <button class="btn primary btn-teardown" data-action="openTeardown" style="width:100%;margin-bottom:12px">
+        🔍 Inspect Hardware (Front & Rear 3D View) →
+      </button>
+      <div class="def-card">
+        <b>OSI Layer Role & Physical Architecture</b><br>
+        ${cat.definition}
+      </div>
+      <div class="insight-card">
+        <span>Hardware Highlights</span>
+        <b>${cat.hotspots?.map(h => h.name).slice(0, 3).join(' • ') || 'Industrial rackmount chassis with enterprise redundancy.'}</b>
+      </div>`;
+    }
+
     if (tab === 'ports') {
       return `
       <div class="def-card">
@@ -298,29 +326,6 @@ export function createPanels(ctx) {
         </div>
       </div>`;
     }
-
-    // Default Overview
-    return `
-    <div class="device-profile enterprise-profile">
-      <div class="device-profile-icon">${cat.icon}</div>
-      <div class="profile-meta">
-        <span class="category-pill">${cat.category}</span>
-        <h4>${cat.name}</h4>
-        <p>Burned-in MAC: <code>${d.mac || '00:1a:2b:00:00:00'}</code></p>
-      </div>
-    </div>
-    <div class="def-card">
-      <b>OSI Function & Purpose</b><br>
-      ${cat.definition}
-    </div>
-    <div class="insight-card">
-      <span>Architectural Insight</span>
-      <b>${d.type === 'switch' ? 'Switches maintain hardware CAM tables to direct frames straight to destination ports, eliminating collisions.' :
-          d.type === 'router' ? 'Routers act as Default Gateways, stripping Layer 2 headers, evaluating Layer 3 IP destinations, and forwarding across subnets.' :
-          d.type === 'firewall' ? 'Stateful firewalls maintain connection state tables to inspect and control bidirectional traffic flows between security zones.' :
-          d.type === 'server' ? 'Enterprise servers provide automated infrastructure services (DHCP address allocation & DNS domain resolution).' :
-          'Workstations generate application requests, encapsulate them into packets, and transmit frames onto the physical medium.'}</b>
-    </div>`;
   }
 
   function renderTerminal() {
@@ -372,9 +377,300 @@ export function createPanels(ctx) {
     box.querySelector('[data-run-command]')?.addEventListener('click', run);
   }
 
+  // ==========================================================================
+  // PHOTOREALISTIC HARDWARE TEARDOWN & 360° INSPECTION MODAL
+  // ==========================================================================
+  function openTeardownModal(d) {
+    const modalRoot = $('#modalRoot');
+    if (!modalRoot) return;
+    const cat = ctx.catalog[d.type];
+    let currentSide = 'front'; // 'front' | 'rear'
+
+    function renderTeardown() {
+      modalRoot.innerHTML = `
+      <div class="modal-backdrop teardown-backdrop">
+        <div class="modal-card teardown-card">
+          <div class="teardown-head">
+            <div>
+              <span class="panel-eyebrow">PHYSICAL HARDWARE TEARDOWN</span>
+              <h2>${cat.name}</h2>
+              <p>${d.name} · ${cat.specs['Form Factor'] || '1U 19-Inch Rack Chassis'}</p>
+            </div>
+            <div class="teardown-head-actions">
+              <button class="btn soft side-toggle-btn" data-toggle-side>
+                🔄 Flip to ${currentSide === 'front' ? 'REAR VIEW' : 'FRONT VIEW'}
+              </button>
+              <button class="close-x" data-close-teardown>✕</button>
+            </div>
+          </div>
+
+          <div class="teardown-view-container ${currentSide}">
+            <div class="chassis-viewer">
+              ${renderChassisGraphic(d, currentSide)}
+            </div>
+          </div>
+
+          <div class="teardown-info-grid">
+            <div class="teardown-spec-card">
+              <h4>Engineering Datasheet</h4>
+              <div class="spec-grid">
+                ${Object.entries(cat.specs).slice(0, 6).map(([k, v]) => `
+                  <div class="spec"><small>${k}</small><b>${v}</b></div>
+                `).join('')}
+              </div>
+            </div>
+            <div class="teardown-hotspot-card">
+              <h4>Component Architecture (Click to inspect)</h4>
+              <div class="hotspot-list">
+                ${(cat.hotspots || []).map((h, i) => `
+                  <div class="hotspot-item" data-hotspot="${i}">
+                    <span class="hotspot-num">${i + 1}</span>
+                    <div>
+                      <b>${h.name}</b>
+                      <p>${h.desc}</p>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+
+      modalRoot.querySelector('[data-close-teardown]').onclick = () => {
+        modalRoot.innerHTML = '';
+      };
+      modalRoot.querySelector('[data-toggle-side]').onclick = () => {
+        currentSide = currentSide === 'front' ? 'rear' : 'front';
+        renderTeardown();
+      };
+      modalRoot.querySelectorAll('[data-hotspot]').forEach(item => {
+        item.onclick = () => {
+          const idx = parseInt(item.dataset.hotspot);
+          const spot = cat.hotspots?.[idx];
+          if (spot) {
+            ctx.toast(`[${spot.name}]: ${spot.desc}`);
+            item.classList.toggle('active');
+          }
+        };
+      });
+    }
+
+    renderTeardown();
+  }
+
+  function renderChassisGraphic(d, side) {
+    if (d.type === 'switch') {
+      if (side === 'front') {
+        return `
+        <div class="photorealistic-chassis switch-front">
+          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
+          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
+          <div class="switch-front-panel">
+            <div class="panel-left-block">
+              <div class="brand-silkscreen">CYBERLAB CATALYST 2400-G</div>
+              <div class="mode-led-block">
+                <button class="mode-btn">MODE</button>
+                <div class="mode-leds">
+                  <span><i></i>STAT</span><span><i></i>SPEED</span><span><i></i>DUPLEX</span><span><i></i>PoE</span>
+                </div>
+              </div>
+            </div>
+            <div class="rj45-bank-container">
+              <div class="rj45-block bank-1">
+                <span class="block-label">PORTS 1–12 (1000BASE-T)</span>
+                <div class="rj45-grid">
+                  ${Array.from({ length: 12 }, (_, i) => `
+                    <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, `gi0/${i + 1}`) ? 'link-active' : ''}">
+                      <div class="rj45-leds"><span class="led-g"></span><span class="led-a"></span></div>
+                      <div class="rj45-jack"><div class="pins"></div></div>
+                      <small>${i + 1}</small>
+                    </div>`).join('')}
+                </div>
+              </div>
+              <div class="rj45-block bank-2">
+                <span class="block-label">PORTS 13–24 (PoE+ 802.3at)</span>
+                <div class="rj45-grid">
+                  ${Array.from({ length: 12 }, (_, i) => `
+                    <div class="realistic-rj45">
+                      <div class="rj45-leds"><span class="led-g"></span><span class="led-a"></span></div>
+                      <div class="rj45-jack"><div class="pins"></div></div>
+                      <small>${i + 13}</small>
+                    </div>`).join('')}
+                </div>
+              </div>
+            </div>
+            <div class="sfp-uplink-block">
+              <span class="block-label">10G SFP+ UPLINKS</span>
+              <div class="sfp-cages">
+                <div class="sfp-cage"><span class="sfp-latch"></span><small>25G</small></div>
+                <div class="sfp-cage"><span class="sfp-latch"></span><small>26G</small></div>
+              </div>
+              <div class="console-jack"><span class="console-label">CONSOLE</span><div class="rj45-jack console"></div></div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        return `
+        <div class="photorealistic-chassis switch-rear">
+          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
+          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
+          <div class="switch-rear-panel">
+            <div class="fan-tray-block">
+              <span class="block-label">REDUNDANT COOLING FANS</span>
+              <div class="fan-grilles">
+                <div class="fan-grille"><div class="fan-blades"></div></div>
+                <div class="fan-grille"><div class="fan-blades"></div></div>
+                <div class="fan-grille"><div class="fan-blades"></div></div>
+              </div>
+            </div>
+            <div class="grounding-lug-block">
+              <span class="ground-symbol">⏚</span>
+              <div class="ground-lugs"><span></span><span></span></div>
+            </div>
+            <div class="psu-block-container">
+              <div class="hot-swap-psu psu-1">
+                <span class="psu-label">PSU 1 (350W AC)</span>
+                <div class="psu-handle"></div>
+                <div class="c14-inlet"><span></span><span></span><span></span></div>
+                <span class="psu-led">● OK</span>
+              </div>
+              <div class="hot-swap-psu psu-2">
+                <span class="psu-label">PSU 2 (350W AC)</span>
+                <div class="psu-handle"></div>
+                <div class="c14-inlet"><span></span><span></span><span></span></div>
+                <span class="psu-led">● OK</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      }
+    }
+
+    if (d.type === 'router') {
+      if (side === 'front') {
+        return `
+        <div class="photorealistic-chassis router-front">
+          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
+          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
+          <div class="router-front-panel">
+            <div class="panel-left-block">
+              <div class="brand-silkscreen">CYBERLAB MODULAR ROUTER 4331</div>
+              <div class="sys-led-array"><span>PWR <i>●</i></span><span>SYS <i>●</i></span><span>ACT <i>●</i></span></div>
+            </div>
+            <div class="nim-slot-container">
+              <div class="nim-slot slot-0">
+                <span class="nim-label">NIM SLOT 0</span>
+                <div class="thumbscrew left"></div>
+                <div class="blank-plate">BLANK COVER</div>
+                <div class="thumbscrew right"></div>
+              </div>
+              <div class="nim-slot slot-1">
+                <span class="nim-label">NIM SLOT 1</span>
+                <div class="thumbscrew left"></div>
+                <div class="blank-plate">BLANK COVER</div>
+                <div class="thumbscrew right"></div>
+              </div>
+            </div>
+            <div class="router-port-block">
+              <span class="block-label">ROUTED GIGABIT INTERFACES</span>
+              <div class="router-ge-ports">
+                <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, 'g0/0') ? 'link-active' : ''}"><div class="rj45-jack"></div><small>GE0/0/0</small></div>
+                <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, 'g0/1') ? 'link-active' : ''}"><div class="rj45-jack"></div><small>GE0/0/1</small></div>
+                <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, 'g0/2') ? 'link-active' : ''}"><div class="rj45-jack"></div><small>GE0/0/2</small></div>
+              </div>
+              <div class="mgmt-ports">
+                <div class="realistic-rj45 console"><div class="rj45-jack console"></div><small>CON</small></div>
+                <div class="realistic-rj45 console"><div class="rj45-jack console"></div><small>AUX</small></div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        return `
+        <div class="photorealistic-chassis router-rear">
+          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
+          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
+          <div class="router-rear-panel">
+            <div class="fan-grilles"><div class="fan-grille"><div class="fan-blades"></div></div></div>
+            <div class="grounding-lug-block"><span class="ground-symbol">⏚</span><div class="ground-lugs"><span></span><span></span></div></div>
+            <div class="ac-power-entry">
+              <div class="rocker-switch on"><span>I</span><span>O</span></div>
+              <div class="c14-inlet"><span></span><span></span><span></span></div>
+              <small>100–240V ~ 50/60Hz 1.5A</small>
+            </div>
+          </div>
+        </div>`;
+      }
+    }
+
+    if (d.type === 'server') {
+      if (side === 'front') {
+        return `
+        <div class="photorealistic-chassis server-front-2u">
+          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
+          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
+          <div class="server-bezel">
+            <div class="server-brand-badge">CYBERLAB POWEREDGE R750 (2U)</div>
+            <div class="sas-drive-bay-grid">
+              ${Array.from({ length: 8 }, (_, i) => `
+                <div class="sas-drive-caddy">
+                  <div class="caddy-handle"></div>
+                  <div class="drive-leds"><span class="led-g"></span><span class="led-a"></span></div>
+                  <small>BAY ${i}</small>
+                </div>`).join('')}
+            </div>
+            <div class="server-control-panel">
+              <button class="server-power-btn on"><div class="power-icon">⏻</div></button>
+              <div class="server-diag-ports"><div class="vga-port"></div><div class="usb-port"></div></div>
+            </div>
+          </div>
+        </div>`;
+      } else {
+        return `
+        <div class="photorealistic-chassis server-rear-2u">
+          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
+          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
+          <div class="server-rear-panel">
+            <div class="pcie-slots">
+              <div class="quad-nic-block">
+                <span class="block-label">QUAD 10GbE BASE-T NIC</span>
+                <div class="nic-ports">
+                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 1</small></div>
+                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 2</small></div>
+                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 3</small></div>
+                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 4</small></div>
+                </div>
+              </div>
+              <div class="idrac-mgmt-port">
+                <div class="realistic-rj45"><div class="rj45-jack"></div><small>iDRAC/IPMI</small></div>
+              </div>
+            </div>
+            <div class="dual-server-psus">
+              <div class="hot-swap-psu"><div class="psu-handle"></div><div class="c14-inlet"><span></span><span></span><span></span></div><small>750W TITANIUM</small></div>
+              <div class="hot-swap-psu"><div class="psu-handle"></div><div class="c14-inlet"><span></span><span></span><span></span></div><small>750W TITANIUM</small></div>
+            </div>
+          </div>
+        </div>`;
+      }
+    }
+
+    // Generic Photorealistic Front/Rear
+    return `
+    <div class="photorealistic-chassis generic-chassis">
+      <div class="generic-panel">
+        <h3>${cat.name} (${side.toUpperCase()} VIEW)</h3>
+        <p>Enterprise physical hardware engineering representation.</p>
+        <div class="spec-grid" style="margin-top:16px">
+          ${Object.entries(cat.specs).map(([k, v]) => `<div class="spec"><small>${k}</small><b>${v}</b></div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }
+
   function setCapturedPacket(pkt) {
     capturedPacket = pkt;
   }
 
-  return { renderInspector, renderTerminal, setCapturedPacket };
+  return { renderInspector, renderTerminal, setCapturedPacket, openTeardownModal };
 }
