@@ -36,26 +36,20 @@ function has(kind, target, since = 0) {
   return actions.some(a => a.ts >= since && a.kind === kind && (target == null || a.target === target || String(a.target).includes(target)));
 }
 
-// Auto-centered positions to guarantee 100% visibility on all viewports without scrolling
-function defaultPos(type, i, n, total) {
-  const stageWrap = $('#labStageWrap');
-  const w = stageWrap ? stageWrap.clientWidth : 750;
-  const h = stageWrap ? stageWrap.clientHeight : 520;
-  
+function defaultPos(type, i, n) {
   const map = {
-    pc: { x: Math.max(30, w * 0.08), y: h * 0.45 },
-    switch: { x: Math.max(180, w * 0.35), y: h * 0.28 },
-    router: { x: Math.max(180, w * 0.35), y: h * 0.58 },
-    firewall: { x: Math.max(340, w * 0.62), y: h * 0.45 },
-    server: { x: Math.max(340, w * 0.65), y: h * 0.28 },
-    accesspoint: { x: Math.max(340, w * 0.65), y: h * 0.15 },
-    patchpanel: { x: Math.max(340, w * 0.65), y: h * 0.15 }
+    pc: { x: 50, y: 340 },
+    switch: { x: 230, y: 220 },
+    router: { x: 230, y: 370 },
+    firewall: { x: 420, y: 340 },
+    server: { x: 420, y: 200 },
+    accesspoint: { x: 460, y: 140 },
+    patchpanel: { x: 460, y: 140 }
   };
-  
-  let p = { ...(map[type] || { x: 50 + i * 160, y: 180 }) };
+  let p = { ...(map[type] || { x: 80 + i * 130, y: 280 }) };
   if (n > 1) {
-    p.x += 140 * (n - 1);
-    p.y += 50 * (n - 1);
+    p.x += 100 * (n - 1);
+    p.y += 40 * (n - 1);
   }
   return p;
 }
@@ -64,7 +58,7 @@ function setupDevices() {
   const used = {};
   lab.devices.forEach((type, i) => {
     used[type] = (used[type] || 0) + 1;
-    const p = defaultPos(type, i, used[type], lab.devices.length);
+    const p = defaultPos(type, i, used[type]);
     sim.addDevice(type, p.x, p.y, used[type] > 1 ? `${DEVICE_CATALOG[type].short}-${used[type]}` : DEVICE_CATALOG[type].short);
   });
 }
@@ -96,61 +90,78 @@ function currentStep() {
 function stepActionText(s = currentStep()) {
   if (!s) return 'Explore the enterprise lab freely.';
   const map = {
-    inspect: 'Click highlighted device to inspect architecture',
-    inspectPort: 'Click glowing interface in Ports tab',
-    cableTool: 'Select Cat6 RJ45 from the bottom dock',
+    inspect: 'Click the highlighted device to inspect its architecture',
+    inspectPort: 'Click the glowing port interface to inspect PHY state',
+    cableTool: 'Click Cat6 RJ45 on the cable pegboard',
     connect: 'Connect the two highlighted ports with the cable',
-    terminal: 'Open Terminal and run suggested command',
-    configIp: 'Open Inspector → Network → commit IPv4 settings',
-    ping: 'Open Terminal and execute ping test'
+    terminal: 'Open Terminal and execute the suggested command',
+    configIp: 'Open device Inspector → Network tab → configure IPv4 settings',
+    ping: 'Open Terminal and execute ping to test connectivity'
   };
   return map[s.kind] || s.title;
 }
 
 function renderLab() {
   const guided = mode === 'guided';
+  const addShelf = lab.id === 'sandbox'
+    ? `<span class="shelf-title">Add Hardware</span>${['pc', 'switch', 'router', 'firewall', 'server'].map(t => `<button class="shelf-item" data-add-device="${t}"><span>${DEVICE_CATALOG[t].icon}</span><span>${DEVICE_CATALOG[t].short}</span></button>`).join('')}<span class="shelf-divider"></span>`
+    : '';
 
   main().className = 'lab-shell';
   main().innerHTML = `
   <div class="lab-header">
-    <div class="lab-header-left">
-      <button class="back-btn" data-action="leave" title="Back to curriculum">←</button>
-      <div class="lab-title-group">
-        <span class="lab-badge">${lab.id === 'sandbox' ? 'PLAYGROUND' : `LAB ${String(LABS.findIndex(x => x.id === lab.id) + 1).padStart(2, '0')}`}</span>
+    <button class="back-btn" data-action="leave" aria-label="Back to learning modules">←</button>
+    <div class="lab-title-block">
+      <span class="lab-number">${lab.id === 'sandbox' ? 'PLAYGROUND' : `LAB ${String(LABS.findIndex(x => x.id === lab.id) + 1).padStart(2, '0')}`}</span>
+      <div>
         <h2>${lab.title}</h2>
+        <p>${lab.subtitle}</p>
       </div>
     </div>
-    
-    <div class="mode-toggle">
-      <button data-mode="guided" class="${guided ? 'active' : ''}">Guided</button>
-      <button data-mode="practice" class="${mode === 'practice' ? 'active' : ''}">Practice</button>
+    <div class="mode-switch">
+      <button data-mode="guided" class="${guided ? 'active' : ''}">Guided Mode</button>
+      <button data-mode="practice" class="${mode === 'practice' ? 'active' : ''}">Practice Mode</button>
     </div>
-    
-    <div class="header-actions">
-      <button data-action="resetLab" title="Reset topology">↻ Reset</button>
-      <button data-action="helpLab" title="Lab instructions">? Guide</button>
+    <div class="lab-actions">
+      <button data-action="resetLab">↻ Reset Topology</button>
+      <button data-action="helpLab">? Lab Guide</button>
     </div>
   </div>
-
   <div class="lab-layout">
     <aside class="coach-panel" id="coachPanel"></aside>
-    
     <section class="lab-stage-wrap" id="labStageWrap">
+      <div class="now-banner" id="nowBanner">
+        <span class="now-pulse"></span>
+        <div>
+          <small>DO THIS NOW</small>
+          <b>${guided ? stepActionText() : 'Solve the mission independently without step-by-step guidance'}</b>
+        </div>
+        <button data-action="showTarget">Show me target</button>
+      </div>
+      <div class="room-wall"></div>
+      <div class="desk-plane"></div>
+      <div class="pegboard">
+        <div class="peg-title">PATCH LEADS</div>
+        <div class="peg-tools">
+          <button class="cable-reel" data-cable="rj45"><span class="coil"></span><span>Cat6 RJ45</span></button>
+          <button class="cable-reel console" data-cable="console"><span class="coil"></span><span>Console</span></button>
+        </div>
+      </div>
+      <div class="rack">
+        <div class="rack-label">42U RACK</div>
+        ${Array.from({ length: 6 }, () => `<div class="rack-slot">${'<i></i>'.repeat(9)}</div>`).join('')}
+      </div>
       <svg class="cable-svg" id="cableSvg"></svg>
       <div class="stage" id="stage"></div>
-      
       <div class="connection-status" id="connectionStatus"></div>
       <div class="stage-hint" id="stageHint"></div>
-
-      <!-- Minimalist Floating Tool Dock -->
-      <div class="stage-dock">
-        <button class="dock-btn" data-cable="rj45"><span>🔌</span><span>Cat6 RJ45</span></button>
-        <button class="dock-btn" data-cable="console"><span>⚡</span><span>Console</span></button>
-        <div class="dock-divider"></div>
-        <button class="dock-btn" data-action="terminal"><span>⌨</span><span>Terminal</span></button>
-        <button class="dock-btn" data-action="openTeardownDirect"><span>🔬</span><span>3D Teardown</span></button>
+      <div class="device-shelf">
+        ${addShelf}
+        <span class="shelf-title">Tools</span>
+        <button class="shelf-item" data-cable="rj45"><span>🔌</span><span>Cat6 RJ45</span></button>
+        <button class="shelf-item" data-action="terminal"><span>⌨</span><span>Terminal</span></button>
       </div>
-
+      <button class="terminal-fab" data-action="terminal">⌨ Terminal CLI</button>
       <div class="terminal-drawer" id="terminalDrawer"></div>
       <div id="inspectorRoot"></div>
     </section>
@@ -160,6 +171,7 @@ function renderLab() {
   renderStage();
   renderTerminal();
   bindLabActions();
+  updateNowBanner();
   updateConnectionStatus();
   highlightCurrentTarget();
 }
@@ -172,68 +184,64 @@ function renderCoach() {
 
   if (mode === 'practice' || !s) {
     p.innerHTML = `
-    <div>
-      <div class="coach-header">
-        <div class="coach-avatar">🧪</div>
-        <div>
-          <h3>${lab.id === 'sandbox' ? 'Playground' : 'Practice Mode'}</h3>
-          <p>Independent execution</p>
-        </div>
-      </div>
-      <div class="coach-step-box">
-        <span class="step-kicker">MISSION OUTCOME</span>
-        <h4>${lab.outcome}</h4>
-        <p>${lab.id === 'sandbox' ? 'Add hardware, plug cables, configure subnets, and test CLI commands.' : 'Follow engineering workflow: Cable L1 → Address L3 → Verify with CLI.'}</p>
-        ${lab.id !== 'sandbox' ? '<button class="btn yellow" style="width:100%" data-action="verifyPractice">Verify Topology →</button>' : ''}
+    <div class="coach-title">
+      <div class="coach-bot">🧪</div>
+      <div>
+        <h3>${lab.id === 'sandbox' ? 'Open Network Playground' : 'Independent Practice Mode'}</h3>
+        <p>${lab.id === 'sandbox' ? 'Build and test enterprise topologies freely.' : 'No highlighted hints. Demonstrate mastery alone.'}</p>
       </div>
     </div>
-    <div style="font-size:10px;color:#7a9688;line-height:1.4">
-      Switch to <b>Guided</b> mode anytime for step-by-step assistance.
+    <div class="coach-step emphasis">
+      <span class="step-label">MISSION BRIEF</span>
+      <h4>${lab.outcome}</h4>
+      <p>${lab.id === 'sandbox' ? 'Add devices, plug in cables, assign IPs, configure VLANs, and run CLI commands.' : 'Follow standard engineering workflow: Inspect → Cable L1 → Configure L3 → Verify with Ping & CLI.'}</p>
+      ${lab.id !== 'sandbox' ? '<button class="btn yellow coach-next" data-action="verifyPractice">Verify My Topology →</button>' : ''}
+    </div>
+    <div class="coach-footer">
+      <b>Stuck?</b> Switch back to Guided mode to review step-by-step diagnostics.
     </div>`;
     p.querySelector('[data-action="verifyPractice"]')?.addEventListener('click', verifyPractice);
     return;
   }
 
   p.innerHTML = `
-  <div>
-    <div class="coach-header">
-      <div class="coach-avatar">🌱</div>
-      <div>
-        <h3>Byte</h3>
-        <p>Lab Partner</p>
-      </div>
-    </div>
-    <div class="step-progress-bar">
-      ${steps.map((_, i) => `<i class="${i < stepIndex ? 'done' : i === stepIndex ? 'current' : ''}"></i>`).join('')}
-    </div>
-    <div class="coach-step-box">
-      <span class="step-kicker">STEP ${stepIndex + 1} OF ${steps.length}</span>
-      <h4>${s.title}</h4>
-      <p>${s.body}</p>
-      
-      <div class="action-card">
-        <small>ACTION REQUIRED</small>
-        <b>${stepActionText(s)}</b>
-      </div>
-
-      <div class="coach-tip-card">
-        <b>Engineering Rationale</b>
-        <span>${s.tip}</span>
-      </div>
-
-      <div class="coach-nav-buttons">
-        <button class="btn secondary" data-action="showTarget">Show Target</button>
-        <button class="btn primary" data-action="checkStep">Verify →</button>
-      </div>
+  <div class="coach-title">
+    <div class="coach-bot">🌱</div>
+    <div>
+      <h3>Byte</h3>
+      <p>Enterprise Network Lab Partner</p>
     </div>
   </div>
-
-  <div class="objectives-compact">
+  <div class="lesson-progress">
+    ${steps.map((_, i) => `<i class="${i < stepIndex ? 'done' : i === stepIndex ? 'current' : ''}"></i>`).join('')}
+  </div>
+  <div class="coach-step emphasis">
+    <span class="step-label">STEP ${stepIndex + 1} OF ${steps.length}</span>
+    <h4>${s.title}</h4>
+    <p>${s.body}</p>
+    <div class="do-card">
+      <small>ACTION REQUIRED</small>
+      <b>${stepActionText(s)}</b>
+    </div>
+    <div class="coach-tip">
+      <b>Networking Rationale</b>
+      <span>${s.tip}</span>
+    </div>
+    <div class="coach-buttons">
+      <button class="btn soft" data-action="showTarget">Show Target</button>
+      <button class="btn primary coach-next" data-action="checkStep">Verify Step →</button>
+    </div>
+  </div>
+  <div class="objectives">
+    <h4>Lab Progress</h4>
     ${steps.map((x, i) => `
-      <div class="obj-row ${i < stepIndex ? 'done' : i === stepIndex ? 'active' : ''}">
+      <div class="objective ${i < stepIndex ? 'done' : i === stepIndex ? 'active' : ''}">
         <span class="obj-dot">${i < stepIndex ? '✓' : i === stepIndex ? '→' : '○'}</span>
         <span>${x.title}</span>
       </div>`).join('')}
+  </div>
+  <div class="coach-footer">
+    Learn how real packets travel from application layer to physical copper. Click 'Show Target' anytime you need guidance.
   </div>`;
 
   p.querySelector('[data-action="checkStep"]').onclick = checkStep;
@@ -257,14 +265,12 @@ function renderDevice(d) {
     </div>`;
   } else if (d.type === 'server') {
     body = `
-    <div class="device-body" style="height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 8px">
-      <div style="font-size:7px;font-weight:900;color:#c6d6cf">2U SERVER</div>
-      <div class="port-strip">
-        ${ports.map(p => `
-          <div class="port-jack-block">
-            <div class="port-dual-leds"><span class="mini-led ${sim.linkFor(d.id, p.id) ? 'link-up' : ''}"></span></div>
-            <span class="port ${sim.linkFor(d.id, p.id) ? 'connected' : ''}" data-port="${p.id}"><em>${p.label}</em></span>
-          </div>`).join('')}
+    <div class="device-body">
+      <div class="server-bay-grid">
+        ${Array.from({ length: 6 }, () => `<div class="sas-caddy"><span></span></div>`).join('')}
+      </div>
+      <div class="port-strip endpoint-strip">
+        ${ports.map(p => `<span class="port ${sim.linkFor(d.id, p.id) ? 'connected' : ''}" data-port="${p.id}"><em>${p.label}</em></span>`).join('')}
       </div>
     </div>`;
   } else if (d.type === 'switch') {
@@ -273,8 +279,8 @@ function renderDevice(d) {
       <div class="rack-ear-left"><span class="rack-screw"></span><span class="rack-screw"></span></div>
       <div class="rack-ear-right"><span class="rack-screw"></span><span class="rack-screw"></span></div>
       <div class="switch-header">
-        <span>24-PORT GIGABIT SWITCH</span>
-        <div class="switch-sys-leds"><span class="sys-led"></span></div>
+        <span>24-PORT GIGABIT MANAGED SWITCH</span>
+        <div class="switch-sys-leds"><span class="sys-led"></span><span class="sys-led" style="background:#f2c94c"></span></div>
       </div>
       <div class="port-strip">
         ${ports.slice(0, 8).map(p => `
@@ -293,7 +299,7 @@ function renderDevice(d) {
       <div class="rack-ear-left"><span class="rack-screw"></span><span class="rack-screw"></span></div>
       <div class="rack-ear-right"><span class="rack-screw"></span><span class="rack-screw"></span></div>
       <div class="switch-header">
-        <span>${cat.short.toUpperCase()}</span>
+        <span class="dev-brand">${cat.name.toUpperCase()}</span>
         <div class="switch-sys-leds"><span class="sys-led"></span></div>
       </div>
       <div class="port-strip">
@@ -313,8 +319,9 @@ function renderDevice(d) {
   <div class="lab-device ${d.type} ${selectedDevice === d.id ? 'selected' : ''}" data-device="${d.id}" style="left:${d.x}px;top:${d.y}px">
     ${body}
     <div class="device-label">
-      <span>${d.name}</span>
-      <button class="btn-micro-teardown" data-inspect-teardown="${d.id}" title="3D Hardware Teardown">🔬 3D</button>
+      ${d.name}
+      <small>${cat.category}</small>
+      <button class="btn-micro-teardown" data-inspect-teardown="${d.id}" title="Inspect Hardware Teardown (Front & Rear 3D View)">🔬 3D View</button>
     </div>
   </div>`;
 }
@@ -337,10 +344,9 @@ function bindDeviceEvents() {
       if (dev) ensurePanels().openTeardownModal(dev);
     };
   });
-
   $$('.lab-device').forEach(el => {
     el.onpointerdown = e => {
-      if (e.target.closest('.port') || e.target.closest('button')) return;
+      if (e.target.closest('.port')) return;
       e.stopPropagation();
       const devId = el.dataset.device;
       selectDevice(devId);
@@ -352,10 +358,10 @@ function bindDeviceEvents() {
     el.onpointermove = e => {
       if (!dragging || dragging.id !== el.dataset.device) return;
       const stageWrap = $('#labStageWrap');
-      const maxW = stageWrap ? stageWrap.clientWidth - 180 : 700;
-      const maxH = stageWrap ? stageWrap.clientHeight - 110 : 450;
+      const maxW = stageWrap ? stageWrap.clientWidth - 190 : 800;
+      const maxH = stageWrap ? stageWrap.clientHeight - 130 : 600;
       const nx = Math.max(10, Math.min(maxW, dragging.origX + e.clientX - dragging.startX));
-      const ny = Math.max(10, Math.min(maxH, dragging.origY + e.clientY - dragging.startY));
+      const ny = Math.max(70, Math.min(maxH, dragging.origY + e.clientY - dragging.startY));
       sim.setPosition(dragging.id, nx, ny);
       el.style.left = nx + 'px';
       el.style.top = ny + 'px';
@@ -387,7 +393,7 @@ function selectDevice(id) {
   renderTerminal();
   record('inspect', id);
   const dev = sim.getDevice(id);
-  if (dev) stageHint(`${dev.name} selected.`);
+  if (dev) stageHint(`${dev.name} (${DEVICE_CATALOG[dev.type].name}) selected.`);
 }
 
 function handlePort(dev, port) {
@@ -397,27 +403,27 @@ function handlePort(dev, port) {
   record('inspectPort', `${dev}:${port}`);
 
   if (!activeCable) {
-    stageHint(`${sim.getDevice(dev)?.name} [${port}]. Click Cat6 RJ45 in the bottom dock to cable.`);
+    stageHint(`${sim.getDevice(dev)?.name} [${port}] selected. To cable it, select Cat6 RJ45 from tools.`);
     updateConnectionStatus();
     return;
   }
   if (!cableStart) {
     cableStart = { dev, port };
     updateConnectionStatus();
-    stageHint(`Connected to ${sim.getDevice(dev)?.name} [${port}]. Now click target port.`);
+    stageHint(`First RJ45 connector plugged into ${sim.getDevice(dev)?.name} [${port}]. Now click destination port.`);
     highlightCurrentTarget();
     return;
   }
   if (cableStart.dev === dev && cableStart.port === port) {
     cableStart = null;
     updateConnectionStatus();
-    stageHint('Cabling canceled.');
+    stageHint('Cable start canceled.');
     return;
   }
 
   const r = sim.connect(cableStart.dev, cableStart.port, dev, port, activeCable);
   if (r.ok) {
-    toast('Cat6 Link Established (1000BASE-T Full Duplex).');
+    toast('Cat6 RJ45 Connected. Link auto-negotiation complete (1000BASE-T Full Duplex).');
     record('connect', `${cableStart.dev}:${cableStart.port}>${dev}:${port}`);
     record('connect', `${dev}:${port}>${cableStart.dev}:${cableStart.port}`);
   } else {
@@ -433,17 +439,12 @@ function handlePort(dev, port) {
 }
 
 function chooseCable(type) {
-  if (activeCable === type) {
-    activeCable = null;
-    cableStart = null;
-  } else {
-    activeCable = type;
-    cableStart = null;
-  }
-  $$('[data-cable]').forEach(x => x.classList.toggle('active', x.dataset.cable === activeCable));
+  activeCable = type;
+  cableStart = null;
+  $$('[data-cable]').forEach(x => x.classList.toggle('active', x.dataset.cable === type));
   record('cableTool', type);
   updateConnectionStatus();
-  if (activeCable) stageHint(`${type === 'rj45' ? 'Cat6 RJ45' : 'Console Cable'} armed. Click first port.`);
+  stageHint(`${type === 'rj45' ? 'Cat6 RJ45 Patch Cable' : 'Serial Console Cable'} armed. Click the FIRST port interface.`);
   highlightCurrentTarget();
 }
 
@@ -455,10 +456,11 @@ function updateConnectionStatus() {
     el.innerHTML = '';
     return;
   }
+  const label = activeCable === 'rj45' ? 'Cat6 Gigabit RJ45' : 'RS-232 Console Rollover';
   el.className = 'connection-status show';
   el.innerHTML = cableStart
-    ? `<span>🔌</span><b>${sim.getDevice(cableStart.dev)?.name} [${cableStart.port}]</b> ➔ Click destination port <button data-cancel-cable>Cancel</button>`
-    : `<span>🔌</span><b>${activeCable === 'rj45' ? 'Cat6 RJ45' : 'Console Cable'}</b> ➔ Click first port <button data-cancel-cable>Cancel</button>`;
+    ? `<span>🔌</span><div><small>${label} · END 1 CONNECTED</small><b>${sim.getDevice(cableStart.dev)?.name} [${cableStart.port}]</b><em>Click second destination port</em></div><button data-cancel-cable>Cancel</button>`
+    : `<span>🔌</span><div><small>${label} SELECTED</small><b>Click first interface port</b><em>Port tooltips show negotiated speed</em></div><button data-cancel-cable>Cancel</button>`;
   el.querySelector('[data-cancel-cable]').onclick = () => {
     activeCable = null;
     cableStart = null;
@@ -474,7 +476,7 @@ function stageHint(msg) {
   h.textContent = msg;
   h.classList.add('show');
   clearTimeout(h._t);
-  h._t = setTimeout(() => h.classList.remove('show'), 3500);
+  h._t = setTimeout(() => h.classList.remove('show'), 4500);
 }
 
 function highlightPort(dev, port) {
@@ -500,7 +502,7 @@ function renderCables() {
     if (!a || !b) continue;
     const mx = (a.x + b.x) / 2;
     const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    p.setAttribute('d', `M ${a.x} ${a.y} C ${mx} ${a.y + 40}, ${mx} ${b.y + 40}, ${b.x} ${b.y}`);
+    p.setAttribute('d', `M ${a.x} ${a.y} C ${mx} ${a.y + 45}, ${mx} ${b.y + 45}, ${b.x} ${b.y}`);
     p.setAttribute('class', `cable-line ${l.cable === 'console' ? 'console' : ''}`);
     p.dataset.link = l.id;
     svg.appendChild(p);
@@ -513,6 +515,7 @@ function animatePacket(info) {
   const path = info?.path;
   if (!svg || !path || path.length < 2) return;
 
+  // Animate hop-by-hop
   let currentHop = 0;
   function animateHop() {
     if (currentHop >= path.length - 1) return;
@@ -524,9 +527,9 @@ function animatePacket(info) {
     if (!svgPath) { currentHop++; animateHop(); return; }
 
     const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('r', '6');
+    c.setAttribute('r', '7');
     c.setAttribute('class', 'packet-dot');
-    c.title = 'Click to inspect in Wireshark viewer';
+    c.title = 'Click to inspect Frame Decode in Wireshark viewer';
     c.onclick = () => {
       inspectorTab = 'packets';
       panels?.setCapturedPacket(info);
@@ -537,7 +540,7 @@ function animatePacket(info) {
     let start;
     function tick(t) {
       start ??= t;
-      const u = Math.min(1, (t - start) / 600);
+      const u = Math.min(1, (t - start) / 750);
       const pt = svgPath.getPointAtLength(svgPath.getTotalLength() * u);
       c.setAttribute('cx', pt.x);
       c.setAttribute('cy', pt.y);
@@ -585,15 +588,15 @@ function renderTerminal() { ensurePanels().renderTerminal(); }
 function toggleTerminal(force) {
   terminalOpen = force ?? !terminalOpen;
   if (terminalOpen && !selectedDevice) {
-    const first = sim.devices[0];
-    if (first) selectDevice(first.id);
+    toast('Select an active device first. Terminal console connects to selected hardware.');
+    terminalOpen = false;
   }
   renderTerminal();
   if (terminalOpen && selectedDevice) record('terminal', sim.getDevice(selectedDevice).type);
 }
 
 function runCommand(cmd) {
-  if (!selectedDevice) return toast('Select a device to execute command.');
+  if (!selectedDevice) return toast('Select a device interface to run terminal commands.');
   const clean = String(cmd || '').trim();
   if (!clean) return;
   const out = $('#terminalOutput');
@@ -610,7 +613,7 @@ function runCommand(cmd) {
   }
 }
 
-// Full 13-Lab Validation Engine
+// Validation engine across all 13 Labs
 function stepIsDone(s = currentStep()) {
   if (!s) return true;
   const byType = t => sim.devices.filter(d => d.type === t);
@@ -633,6 +636,7 @@ function stepIsDone(s = currentStep()) {
   }
   if (s.kind === 'terminal') return has('command', 'ipconfig') || has('command', 'show') || actions.some(a => a.kind === 'command' && a.deviceType === s.target);
   if (s.kind === 'configIp') {
+    const expected = s.target === 'pc' ? '192.168.10.10' : s.target === 'server' ? '192.168.10.20' : '192.168.10.1';
     return byType(s.target).some(d => {
       const c = sim.getIp(d.id);
       return c.ip.startsWith('192.168.') || c.ip.startsWith('10.') || c.ip.startsWith('203.');
@@ -643,17 +647,17 @@ function stepIsDone(s = currentStep()) {
 }
 
 function missingMessage(s = currentStep()) {
-  if (!s) return 'Step complete.';
+  if (!s) return 'All actions verified.';
   const map = {
-    inspect: 'Click the highlighted device to inspect it.',
-    inspectPort: 'Click the highlighted port row in the Inspector.',
-    cableTool: 'Select Cat6 RJ45 from the bottom dock.',
-    connect: 'Plug Cat6 RJ45 into the two requested interfaces.',
-    terminal: 'Open Terminal and run the requested command.',
-    configIp: 'Configure and save the IPv4 stack address.',
-    ping: 'Run ping in the Terminal to test connectivity.'
+    inspect: 'Click the highlighted device to inspect its hardware details.',
+    inspectPort: 'Click on the glowing physical port row in the Inspector.',
+    cableTool: 'Select Cat6 RJ45 from the patch leads pegboard.',
+    connect: 'Plug the Cat6 cable into the two requested interface ports.',
+    terminal: 'Open the Terminal and execute the requested diagnostic command.',
+    configIp: 'Open Inspector → Network tab and save the valid IPv4 address.',
+    ping: 'Run ping in the Terminal and verify ICMP replies on the wire.'
   };
-  return map[s.kind] || 'Complete highlighted action first.';
+  return map[s.kind] || 'Complete the highlighted objective first.';
 }
 
 function checkStep() {
@@ -662,7 +666,7 @@ function checkStep() {
   if (!stepIsDone(s)) {
     stageHint(missingMessage(s));
     showTarget();
-    return toast('Action pending. See highlighted target.');
+    return toast('Action pending. Byte has highlighted the required target.');
   }
   stepIndex++;
   if (stepIndex >= lab.steps.length) {
@@ -670,8 +674,9 @@ function checkStep() {
     return achievement();
   }
   renderCoach();
+  updateNowBanner();
   highlightCurrentTarget();
-  toast('Step verified!');
+  toast('Step verified! Next objective unlocked.');
 }
 
 function verifyPractice() {
@@ -690,12 +695,12 @@ function verifyPractice() {
   } else if (lab.id === 'routing-1' || lab.id === 'firewall-1' || lab.id === 'nat-1') {
     ok = links.length >= 2 && actions.some(a => a.kind === 'ping' || a.kind === 'command');
   } else {
-    ok = links.length >= 1 && actions.length >= 2;
+    ok = links.length >= 1 && actions.length >= 3;
   }
 
   if (!ok) {
-    stageHint('Objectives pending. Verify links, IPs, and test commands.');
-    return toast('Verification incomplete.');
+    stageHint('Practice objectives not fully met yet. Check cables, IPv4 addresses, and run test commands.');
+    return toast('Topology verification pending.');
   }
   masterLab(lab.id, actions);
   achievement(true);
@@ -707,16 +712,17 @@ function achievement(mastery = false) {
   <div class="modal-backdrop">
     <div class="modal-card achievement">
       <div class="trophy">🏆</div>
+      <span class="kicker"><i class="kicker-dot"></i> ${mastery ? 'INDEPENDENT MASTERY' : 'GUIDED LAB COMPLETE'}</span>
       <h2>${lab.title}</h2>
-      <p>${mastery ? 'Complete independent mastery demonstrated.' : 'Guided module completed successfully.'}</p>
+      <p>${mastery ? 'You successfully demonstrated complete independent mastery of this networking module.' : 'Outstanding work! Complete in Practice mode to earn full Mastery rank.'}</p>
       <div class="reward-row">
-        <div class="reward"><b>+${mastery ? 250 : 150}</b><small>XP</small></div>
-        <div class="reward"><b>${state.completed.length}</b><small>Completed</small></div>
-        <div class="reward"><b>${rank()[1]}</b><small>Rank</small></div>
+        <div class="reward"><b>+${mastery ? 250 : 150}</b><small>XP Gained</small></div>
+        <div class="reward"><b>${state.completed.length}</b><small>Labs Complete</small></div>
+        <div class="reward"><b>${rank()[1]}</b><small>Current Rank</small></div>
       </div>
       <div class="modal-actions">
-        <button class="btn secondary" data-home>Return to Modules</button>
-        ${mastery ? '' : '<button class="btn primary" data-practice>Practice Mode →</button>'}
+        <button class="btn secondary" data-home>Return to Learning Path</button>
+        ${mastery ? '' : '<button class="btn primary" data-practice>Try Practice Mode →</button>'}
       </div>
     </div>
   </div>`;
@@ -736,22 +742,28 @@ function achievement(mastery = false) {
 
 function showOrientation() {
   const root = modalRoot();
+  const first = currentStep();
   root.innerHTML = `
   <div class="modal-backdrop">
-    <div class="modal-card">
+    <div class="modal-card orientation-v2">
       <div class="orientation-art">${lab.icon}</div>
+      <span class="kicker"><i class="kicker-dot"></i> ${mode === 'guided' ? 'ENTERPRISE GUIDED LAB' : 'PRACTICE SIMULATION'}</span>
       <h2>${lab.title}</h2>
       <p>${lab.subtitle}</p>
       <div class="mission-brief">
-        <small>MISSION</small>
+        <small>MISSION OUTCOME</small>
         <b>${lab.outcome}</b>
       </div>
       <div class="orientation-list">
-        <div class="orientation-item"><span>1</span><span>Follow the glowing green targets on ports and tools.</span></div>
-        <div class="orientation-item"><span>2</span><span>Click moving packets to inspect real-world headers.</span></div>
-        <div class="orientation-item"><span>3</span><span>Execute real diagnostic commands in the terminal.</span></div>
+        <div class="orientation-item"><span>1</span><span><b>Follow the green pulsing target.</b> Identifies exact physical ports, cables, and CLI tools.</span></div>
+        <div class="orientation-item"><span>2</span><span><b>Inspect live packet flows.</b> Click animated packets on cables to decode real Ethernet/IP/ICMP headers.</span></div>
+        <div class="orientation-item"><span>3</span><span><b>Hands-on engineering.</b> Real Cisco-style CLI commands and real-world networking mechanics.</span></div>
       </div>
-      <button class="btn primary" data-start style="width:100%">Begin Lab →</button>
+      <div class="first-action">
+        <small>INITIAL ACTION</small>
+        <b>${first ? stepActionText(first) : 'Explore the enterprise lab'}</b>
+      </div>
+      <button class="btn primary" data-start style="width:100%">Initialize Lab Environment →</button>
     </div>
   </div>`;
   root.querySelector('[data-start]').onclick = () => {
@@ -761,13 +773,21 @@ function showOrientation() {
   };
 }
 
+function updateNowBanner() {
+  const b = $('#nowBanner');
+  if (!b) return;
+  const strong = b.querySelector('b');
+  if (strong) strong.textContent = mode === 'guided' ? stepActionText() : 'Solve the objective without step-by-step guidance';
+}
+
 function showTarget() {
   highlightCurrentTarget();
   const s = currentStep();
   if (!s) return;
   stageHint(stepActionText(s));
-  const focused = document.querySelector('.focused, .port.target, .dock-btn.active');
-  focused?.animate?.([{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], { duration: 500, iterations: 2 });
+  const focused = document.querySelector('.focused, .port.target, .cable-reel.active');
+  focused?.scrollIntoView?.({ behavior: 'smooth', block: 'center', inline: 'center' });
+  focused?.animate?.([{ transform: 'scale(1)' }, { transform: 'scale(1.06)' }, { transform: 'scale(1)' }], { duration: 600, iterations: 2 });
 }
 
 function highlightCurrentTarget() {
@@ -813,7 +833,7 @@ function bindLabActions() {
   $$('[data-mode]').forEach(b => {
     b.onclick = () => {
       if (b.dataset.mode === 'practice' && !state.completed.includes(lab.id) && lab.id !== 'sandbox') {
-        return toast('Complete Guided mode once before unlocking Practice.');
+        return toast('Complete Guided mode once before unlocking Independent Practice.');
       }
       mode = b.dataset.mode;
       stepIndex = 0;
@@ -840,13 +860,16 @@ function bindLabActions() {
     setupDevices();
     panels = null;
     renderLab();
-    toast('Topology reset.');
+    toast('Topology reset. Restarting from Step 1.');
   };
   $('[data-action="helpLab"]').onclick = showOrientation;
+  $$('[data-action="showTarget"]').forEach(b => b.onclick = showTarget);
   $$('[data-cable]').forEach(b => b.onclick = () => chooseCable(b.dataset.cable));
   $$('[data-action="terminal"]').forEach(b => b.onclick = () => toggleTerminal());
-  $$('[data-action="openTeardownDirect"]').forEach(b => b.onclick = () => {
-    const dev = selectedDevice ? sim.getDevice(selectedDevice) : sim.devices[0];
-    if (dev) ensurePanels().openTeardownModal(dev);
+  $$('[data-add-device]').forEach(b => b.onclick = () => {
+    const t = b.dataset.addDevice;
+    sim.addDevice(t, 180 + Math.random() * 320, 200 + Math.random() * 180);
+    renderStage();
+    toast(`${DEVICE_CATALOG[t].name} deployed to workbench.`);
   });
 }
