@@ -40,7 +40,7 @@
 }
 
 .lab-number {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: .12em;
   color: #789486;
   font-weight: 800;
@@ -120,7 +120,7 @@
 .coach-panel {
   background: #fff;
   border-right: 1px solid var(--line);
-  padding: 16px;
+  padding: 20px;
   height: 100%;
   overflow-y: auto;
   z-index: 10;
@@ -150,7 +150,7 @@
   color: var(--ink);
 }
 .coach-title p {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   margin: 2px 0 0;
 }
@@ -177,7 +177,7 @@
   border: 1px solid #d8ebde;
 }
 .step-label {
-  font-size: 9px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: .8px;
   color: var(--green-700);
@@ -207,7 +207,7 @@
   gap: 4px;
 }
 .do-card small {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: .12em;
   font-weight: 900;
   color: #8b7418;
@@ -224,7 +224,7 @@
   margin-top: 12px;
 }
 .coach-tip b {
-  font-size: 10px;
+  font-size: 11px;
   color: #23724a;
   text-transform: uppercase;
   letter-spacing: .08em;
@@ -268,7 +268,7 @@
   display: grid;
   place-items: center;
   flex: 0 0 auto;
-  font-size: 10px;
+  font-size: 11px;
 }
 .objective.active {
   background: #eff9f2;
@@ -319,7 +319,7 @@
 }
 .now-banner small {
   display: block;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: .15em;
   color: #b9dcc7;
   font-weight: 900;
@@ -332,7 +332,7 @@
   color: #28331c;
   border-radius: 10px;
   padding: 7px 12px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 900;
   cursor: pointer;
   transition: transform 0.15s;
@@ -581,7 +581,7 @@
 }
 
 .device-label {
-  padding: 5px 10px;
+  padding: 7px 12px;
   min-width: 95px;
   border-radius: 8px;
   background: #fff;
@@ -595,11 +595,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
+  gap: 5px;
 }
 .device-label small {
   display: block;
-  font-size: 7.5px;
+  font-size: 9px;
   font-weight: 600;
   color: #89a093;
   margin-top: 1px;
@@ -609,9 +609,9 @@
   background: #eaf8f0;
   color: #176840;
   border-radius: 6px;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
-  padding: 2px 6px;
+  padding: 4px 8px;
   cursor: pointer;
   margin-top: 2px;
   transition: all 0.15s;
@@ -639,7 +639,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 7px;
+  font-size: 9px;
   font-weight: 800;
   color: #b5c7bf;
   margin-bottom: 5px;
@@ -782,8 +782,8 @@
 @keyframes actBlink { 50% { opacity: 0.2; } }
 
 .port {
-  width: 20px;
-  height: 17px;
+  width: 24px;
+  height: 20px;
   border-radius: 2px;
   background: #090e0c;
   border: 1px solid #5a7469;
@@ -801,7 +801,7 @@
   background: #173f2d;
   color: #fff;
   font-style: normal;
-  font-size: 8px;
+  font-size: 9px;
   white-space: nowrap;
   padding: 3px 6px;
   border-radius: 5px;
@@ -864,22 +864,22 @@
 .connection-status > span { font-size: 22px; }
 .connection-status div { display: flex; flex-direction: column; min-width: 210px; }
 .connection-status small {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: .12em;
   color: #5c8d71;
   font-weight: 900;
 }
 .connection-status b { font-size: 11px; color: #173f2d; }
-.connection-status em { font-size: 9px; color: #84988e; font-style: normal; }
+.connection-status em { font-size: 11px; color: #84988e; font-style: normal; }
 .connection-status button {
   border: 0;
   background: #eef6f0;
   color: #4c6d5a;
   border-radius: 9px;
-  padding: 7px 10px;
+  padding: 8px 14px;
   cursor: pointer;
   font-weight: 700;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 /* Stage Hint */
@@ -919,7 +919,7 @@
   gap: 10px;
 }
 .shelf-title {
-  font-size: 9px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--muted);
@@ -927,16 +927,16 @@
   margin-right: 4px;
 }
 .shelf-item {
-  width: 72px;
-  height: 56px;
+  width: 80px;
+  height: 60px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: #fff;
   display: grid;
   place-items: center;
-  gap: 2px;
+  gap: 4px;
   cursor: pointer;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   transition: transform 0.15s, border-color 0.15s;
 }
@@ -1002,7 +1002,7 @@
   border-bottom: 1px solid var(--line);
 }
 .panel-eyebrow {
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: .13em;
   color: #82a08f;
   font-weight: 900;
@@ -1013,17 +1013,17 @@
   color: var(--ink);
 }
 .inspect-head p {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted);
   margin: 2px 0 0;
 }
 .badge-layer {
   background: #eef7f2;
   color: var(--green-800);
-  padding: 2px 5px;
+  padding: 3px 7px;
   border-radius: 4px;
   font-weight: 700;
-  font-size: 8.5px;
+  font-size: 10px;
 }
 .close-x {
   border: 0;
@@ -1037,9 +1037,9 @@
 .close-x:hover { background: var(--green-50); }
 
 .inspect-tabs {
-  padding: 6px 10px;
+  padding: 8px 12px;
   display: flex;
-  gap: 4px;
+  gap: 6px;
   overflow-x: auto;
   border-bottom: 1px solid var(--line);
 }
@@ -1047,10 +1047,10 @@
   border: 0;
   background: transparent;
   border-radius: 8px;
-  font-size: 9.5px;
+  font-size: 11px;
   font-weight: 800;
   color: var(--muted);
-  padding: 6px 9px;
+  padding: 7px 12px;
   white-space: nowrap;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -1078,7 +1078,7 @@
 .device-profile-icon { font-size: 32px; }
 .category-pill {
   display: inline-block;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--green-700);
@@ -1090,7 +1090,7 @@
   color: #173e2b;
 }
 .profile-meta p {
-  font-size: 9px;
+  font-size: 11px;
   color: #7b9587;
   margin: 0;
 }
@@ -1119,7 +1119,7 @@
 }
 .insight-card span {
   display: block;
-  font-size: 8px;
+  font-size: 10px;
   text-transform: uppercase;
   letter-spacing: .1em;
   color: #967d26;
@@ -1128,7 +1128,7 @@
 .insight-card b {
   display: block;
   margin-top: 4px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.4;
   color: #51583a;
 }
@@ -1146,17 +1146,17 @@
 }
 .spec small {
   display: block;
-  font-size: 8px;
+  font-size: 10px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: .6px;
 }
-.spec b { font-size: 10px; color: var(--ink); }
+.spec b { font-size: 12px; color: var(--ink); }
 
 .port-table {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-top: 10px;
 }
 .port-row-btn {
@@ -1178,7 +1178,7 @@
   background: #f3fbf5;
 }
 .port-info b { font-size: 11px; color: var(--ink); }
-.port-info small { display: block; font-size: 8px; color: #8aa095; margin-top: 1px; }
+.port-info small { display: block; font-size: 9px; color: #8aa095; margin-top: 1px; }
 .port-led {
   width: 7px;
   height: 7px;
@@ -1196,13 +1196,13 @@
 .tag-stp {
   background: #fef3c7;
   color: #92400e;
-  padding: 1px 4px;
+  padding: 2px 6px;
   border-radius: 3px;
-  font-size: 7.5px;
+  font-size: 9px;
   font-weight: 800;
   margin-left: 4px;
 }
-.port-state { font-size: 9px; color: var(--muted); }
+.port-state { font-size: 10px; color: var(--muted); }
 .port-state.up { color: var(--green-700); font-weight: 800; }
 .port-state.blocking { color: #d97706; font-weight: 800; }
 
@@ -1220,7 +1220,7 @@
   background: #111815;
   border: 1px solid #283d33;
   color: #e5f5ec;
-  padding: 24px 28px;
+  padding: 28px 32px;
 }
 
 .teardown-head {
@@ -1684,7 +1684,7 @@
   display: grid;
   place-items: center;
   font-weight: 900;
-  font-size: 10px;
+  font-size: 11px;
   flex-shrink: 0;
 }
 .hotspot-item b {
@@ -1693,7 +1693,7 @@
   color: #e5f5ec;
 }
 .hotspot-item p {
-  font-size: 10px;
+  font-size: 11px;
   color: #8da498;
   margin: 2px 0 0;
   line-height: 1.4;
@@ -1743,7 +1743,7 @@
 .first-action { background: #fff7d7; border: 1px solid #f2d66b; }
 .mission-brief small, .first-action small {
   display: block;
-  font-size: 8px;
+  font-size: 10px;
   letter-spacing: .12em;
   font-weight: 900;
   color: #668575;
@@ -1805,7 +1805,7 @@
 .reward small {
   display: block;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   margin-top: 2px;
 }
 
@@ -1835,16 +1835,504 @@
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* ==========================================================================
+   TERMINAL DRAWER (slide-up CLI console)
+   ========================================================================== */
+
+.terminal-drawer {
+  position: absolute;
+  left: 310px;
+  right: 16px;
+  bottom: 90px;
+  height: 280px;
+  background: #0c1813;
+  border: 1px solid #1f3329;
+  border-radius: 14px 14px 0 0;
+  z-index: 32;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+}
+.terminal-drawer.open {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.terminal-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #0a1410;
+  border-bottom: 1px solid #1a2b23;
+  border-radius: 14px 14px 0 0;
+  min-height: 40px;
+}
+.terminal-top b {
+  font-size: 12px;
+  color: #b0d4c2;
+  margin-left: 8px;
+}
+.terminal-top button {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid #2a3d33;
+  color: #8da498;
+  border-radius: 8px;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+  transition: 0.15s;
+}
+.terminal-top button:hover {
+  background: #1a2b23;
+  color: #fff;
+}
+.term-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #2a3d33;
+}
+.term-dot:nth-child(1) { background: #ef4444; }
+.term-dot:nth-child(2) { background: #f59e0b; }
+.term-dot:nth-child(3) { background: #22c55e; }
+
+.terminal-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.terminal-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.terminal-output {
+  flex: 1;
+  padding: 12px 16px;
+  font: 13px/1.6 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+  color: #22c55e;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.terminal-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  border-top: 1px solid #1a2b23;
+  background: #081210;
+}
+.prompt {
+  color: #48d58e;
+  font: 700 13px/1 'Cascadia Code', Consolas, monospace;
+  white-space: nowrap;
+}
+.terminal-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e5f5ec;
+  font: 13px/1 'Cascadia Code', Consolas, monospace;
+  caret-color: #22c55e;
+}
+.terminal-input::placeholder {
+  color: #3d5a4c;
+}
+.term-run {
+  background: #1a352a;
+  border: 1px solid #2d5543;
+  color: #48d58e;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.15s;
+  white-space: nowrap;
+}
+.term-run:hover {
+  background: #27493a;
+  color: #fff;
+}
+
+.command-help {
+  width: 240px;
+  padding: 12px;
+  border-left: 1px solid #1a2b23;
+  overflow-y: auto;
+  background: #091410;
+}
+.command-help h4 {
+  font-size: 11px;
+  color: #6d887a;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  font-weight: 900;
+}
+.cmd-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 10px;
+  margin-bottom: 4px;
+  background: #0e1f18;
+  border: 1px solid #1e3328;
+  border-radius: 8px;
+  color: #b0d4c2;
+  font-size: 11px;
+  font-family: 'Cascadia Code', Consolas, monospace;
+  cursor: pointer;
+  transition: 0.15s;
+  text-align: left;
+}
+.cmd-chip:hover {
+  background: #1a352a;
+  border-color: #2d5543;
+  color: #fff;
+}
+.cmd-chip span {
+  color: #22c55e;
+  font-size: 9px;
+}
+.command-explain {
+  margin-top: 12px;
+  font-size: 10px;
+  color: #4d6157;
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   INSPECTOR TAB CONTENT — IPv4 Network Form
+   ========================================================================== */
+
+.network-form {
+  display: grid;
+  gap: 14px;
+}
+.network-form label {
+  display: grid;
+  gap: 6px;
+}
+.network-form label span {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--green-800);
+}
+.network-form input {
+  width: 100%;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: 'Cascadia Code', Consolas, monospace;
+  outline: none;
+  background: #fff;
+  color: var(--ink);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.network-form input:focus {
+  border-color: var(--green-500);
+  box-shadow: 0 0 0 3px var(--green-100);
+}
+
+/* ==========================================================================
+   INSPECTOR TAB CONTENT — 802.1Q VLANs
+   ========================================================================== */
+
+.vlan-list {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.vlan-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  border-radius: 10px;
+}
+.vlan-row b { font-size: 12px; }
+.vlan-row small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.vlan-badge {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: var(--green-700);
+  color: #fff;
+  white-space: nowrap;
+}
+.vlan-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.vlan-form input {
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  outline: none;
+}
+.vlan-form input:focus {
+  border-color: var(--green-500);
+  box-shadow: 0 0 0 3px var(--green-100);
+}
+
+/* ==========================================================================
+   INSPECTOR TAB CONTENT — IP Routing Table
+   ========================================================================== */
+
+.route-table {
+  display: grid;
+  gap: 6px;
+}
+.route-head {
+  display: grid;
+  grid-template-columns: 50px 1fr 1fr 80px;
+  gap: 8px;
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 900;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--line);
+}
+.route-row {
+  display: grid;
+  grid-template-columns: 50px 1fr 1fr 80px;
+  gap: 8px;
+  padding: 8px 12px;
+  align-items: center;
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.route-row b { font-size: 12px; }
+.route-row small { font-size: 11px; color: var(--muted); }
+.route-type {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 900;
+}
+.route-type.connected {
+  background: var(--green-100);
+  color: var(--green-800);
+}
+.route-type.static {
+  background: var(--yellow-100);
+  color: #8a6a00;
+}
+
+/* ==========================================================================
+   INSPECTOR TAB CONTENT — Firewall ACLs
+   ========================================================================== */
+
+.acl-list {
+  display: grid;
+  gap: 8px;
+}
+.acl-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.acl-row.permit { border-left: 4px solid var(--green-600); }
+.acl-row.deny { border-left: 4px solid var(--danger); }
+.acl-row b { font-size: 12px; }
+.acl-row small { display: block; font-size: 10px; color: var(--muted); margin-top: 2px; }
+.acl-action {
+  font-size: 10px;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.acl-action.permit {
+  background: var(--green-100);
+  color: var(--green-800);
+}
+.acl-action.deny {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   INSPECTOR TAB CONTENT — DHCP & DNS Services
+   ========================================================================== */
+
+.service-block {
+  padding: 14px;
+  background: var(--green-50);
+  border: 1px solid var(--green-100);
+  border-radius: 12px;
+}
+.service-block h4 {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--green-800);
+  margin: 0 0 10px;
+}
+.dns-list {
+  display: grid;
+  gap: 6px;
+}
+.dns-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.dns-row b { font-weight: 700; }
+.dns-type {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--green-700);
+  background: var(--green-50);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.dns-row code {
+  font-family: 'Cascadia Code', Consolas, monospace;
+  font-size: 12px;
+  margin-left: auto;
+  color: var(--green-800);
+}
+
+/* ==========================================================================
+   INSPECTOR TAB CONTENT — Wireshark Frame Decode
+   ========================================================================== */
+
+.wireshark-viewer {
+  display: grid;
+  gap: 8px;
+}
+.packet-layer {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.layer-head {
+  padding: 8px 14px;
+  background: var(--green-50);
+  border-bottom: 1px solid var(--green-100);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--green-800);
+  cursor: pointer;
+}
+.layer-body {
+  padding: 10px 14px;
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+.layer-body span {
+  color: var(--muted);
+  font-weight: 700;
+}
+.layer-body code {
+  font-family: 'Cascadia Code', Consolas, monospace;
+  font-size: 12px;
+  color: var(--green-800);
+  background: var(--green-50);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.packet-placeholder {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--muted);
+}
+.packet-placeholder span {
+  display: block;
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+.packet-placeholder p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   UTILITY CLASSES
+   ========================================================================== */
+
+.spec-intro {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+.btn-teardown {
+  font-size: 13px;
+  font-weight: 800;
+}
+.stp-blocking {
+  opacity: 0.7;
+  border-left: 3px solid #d97706 !important;
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 1060px) {
   .lab-layout { grid-template-columns: 280px minmax(0, 1fr); }
   .rack { transform: scale(0.85); transform-origin: top right; }
   .inspector { width: 290px; }
   .teardown-info-grid { grid-template-columns: 1fr; }
+  .command-help { width: 180px; }
 }
 
 @media (max-width: 768px) {
-  .lab-layout { display: block; }
+  .lab-shell {
+    height: auto;
+    max-height: none;
+    overflow-y: auto;
+  }
+  .lab-layout {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
   .coach-panel {
     position: relative;
     top: auto;
@@ -1857,4 +2345,6 @@
   .now-banner { left: 12px; right: 12px; transform: none; min-width: 0; }
   .inspector { left: 12px; right: 12px; top: 60px; width: auto; }
   .terminal-drawer { left: 10px; right: 10px; }
+  .command-help { display: none; }
 }
+
