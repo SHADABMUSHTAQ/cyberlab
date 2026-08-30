@@ -11,7 +11,20 @@ export function setHomeHandler(fn){homeHandler=fn}
 function toast(m){window.cyberToast?.(m)}
 function record(kind,target,extra={}){actions.push({kind,target,ts:Date.now(),...extra});if(actions.length>120)actions.shift()}
 function has(kind,target,since=0){return actions.some(a=>a.ts>=since&&a.kind===kind&&(target==null||a.target===target||String(a.target).includes(target)))}
-function defaultPos(type,i,n){const map={pc:{x:120,y:390},switch:{x:390,y:320},router:{x:620,y:240},firewall:{x:720,y:390},server:{x:590,y:430},accesspoint:{x:570,y:180},patchpanel:{x:820,y:165}};let p={...(map[type]||{x:180+i*130,y:350})};if(n>1){p.x+=118*(n-1);p.y-=65*(n-1)}return p}
+function defaultPos(type,i,n){
+  const map={
+    pc:{x:50,y:340},
+    switch:{x:230,y:220},
+    router:{x:230,y:370},
+    firewall:{x:420,y:340},
+    server:{x:420,y:200},
+    accesspoint:{x:460,y:140},
+    patchpanel:{x:460,y:140}
+  };
+  let p={...(map[type]||{x:80+i*130,y:280})};
+  if(n>1){p.x+=100*(n-1);p.y+=40*(n-1)}
+  return p
+}
 function setupDevices(){const used={};lab.devices.forEach((type,i)=>{used[type]=(used[type]||0)+1;const p=defaultPos(type,i,used[type]);sim.addDevice(type,p.x,p.y,used[type]>1?`${DEVICE_CATALOG[type].short}-${used[type]}`:DEVICE_CATALOG[type].short)})}
 
 export function startLab(id){
@@ -71,14 +84,57 @@ function renderDevice(d){
 }
 function renderStage(){const stage=$('#stage');if(!stage)return;stage.innerHTML=sim.devices.map(renderDevice).join('');bindDeviceEvents();renderCables();highlightCurrentTarget()}
 function bindDeviceEvents(){
-  $$('.lab-device').forEach(el=>{el.onpointerdown=e=>{if(e.target.closest('.port'))return;selectDevice(el.dataset.device);const d=sim.getDevice(el.dataset.device);dragging={id:d.id,startX:e.clientX,startY:e.clientY,origX:d.x,origY:d.y};el.setPointerCapture?.(e.pointerId)};el.onpointermove=e=>{if(!dragging||dragging.id!==el.dataset.device)return;const nx=Math.max(12,dragging.origX+e.clientX-dragging.startX),ny=Math.max(88,dragging.origY+e.clientY-dragging.startY);sim.setPosition(dragging.id,nx,ny);el.style.left=nx+'px';el.style.top=ny+'px';renderCables()};el.onpointerup=()=>dragging=null});
-  $$('.port').forEach(p=>p.onpointerdown=e=>{e.preventDefault();e.stopPropagation();handlePort(e.target.closest('[data-device]').dataset.device,p.dataset.port)})
+  $$('.lab-device').forEach(el=>{
+    el.onpointerdown=e=>{
+      if(e.target.closest('.port'))return;
+      e.stopPropagation();
+      const devId=el.dataset.device;
+      selectDevice(devId);
+      const d=sim.getDevice(devId);
+      if(!d)return;
+      dragging={id:d.id,startX:e.clientX,startY:e.clientY,origX:d.x,origY:d.y,el};
+      el.setPointerCapture?.(e.pointerId);
+    };
+    el.onpointermove=e=>{
+      if(!dragging||dragging.id!==el.dataset.device)return;
+      const stageWrap=$('#labStageWrap');
+      const maxW=stageWrap?stageWrap.clientWidth-180:800;
+      const maxH=stageWrap?stageWrap.clientHeight-130:600;
+      const nx=Math.max(10,Math.min(maxW,dragging.origX+e.clientX-dragging.startX));
+      const ny=Math.max(70,Math.min(maxH,dragging.origY+e.clientY-dragging.startY));
+      sim.setPosition(dragging.id,nx,ny);
+      el.style.left=nx+'px';
+      el.style.top=ny+'px';
+      renderCables();
+    };
+    el.onpointerup=e=>{
+      if(dragging?.el){try{dragging.el.releasePointerCapture?.(e.pointerId)}catch(_){}}
+      dragging=null;
+    };
+    el.onpointercancel=()=>{dragging=null};
+  });
+  $$('.port').forEach(p=>{
+    p.onpointerdown=e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      const devEl=e.target.closest('[data-device]');
+      if(devEl)handlePort(devEl.dataset.device,p.dataset.port);
+    };
+  });
 }
-function selectDevice(id){selectedDevice=id;renderStage();renderInspector();renderTerminal();record('inspect',id);stageHint(`${sim.getDevice(id).name} selected. Inspect it on the right.`)}
+function selectDevice(id){
+  selectedDevice=id;
+  $$('.lab-device').forEach(el=>el.classList.toggle('selected',el.dataset.device===id));
+  renderInspector();
+  renderTerminal();
+  record('inspect',id);
+  const dev=sim.getDevice(id);
+  if(dev)stageHint(`${dev.name} selected. Inspect it on the right.`);
+}
 function handlePort(dev,port){
   selectDevice(dev);inspectorTab='ports';renderInspector();record('inspectPort',`${dev}:${port}`);
-  if(!activeCable){stageHint(`${sim.getDevice(dev).name} ${port} selected. To connect it, pick RJ45 first.`);updateConnectionStatus();return}
-  if(!cableStart){cableStart={dev,port};updateConnectionStatus();stageHint(`First end attached to ${sim.getDevice(dev).name} ${port}. Now click the destination port.`);highlightCurrentTarget();return}
+  if(!activeCable){stageHint(`${sim.getDevice(dev)?.name} ${port} selected. To connect it, pick RJ45 first.`);updateConnectionStatus();return}
+  if(!cableStart){cableStart={dev,port};updateConnectionStatus();stageHint(`First end attached to ${sim.getDevice(dev)?.name} ${port}. Now click the destination port.`);highlightCurrentTarget();return}
   if(cableStart.dev===dev&&cableStart.port===port){cableStart=null;updateConnectionStatus();stageHint('Cable start cancelled. Choose the first port again.');return}
   const r=sim.connect(cableStart.dev,cableStart.port,dev,port,activeCable);
   if(r.ok){toast('Cable connected. Both link LEDs are green.');record('connect',`${cableStart.dev}:${cableStart.port}>${dev}:${port}`);record('connect',`${dev}:${port}>${cableStart.dev}:${cableStart.port}`)}else toast(r.message);
@@ -92,7 +148,7 @@ function getPortCenter(key){const [dev,port]=key.split(':');const el=document.qu
 function renderCables(){const svg=$('#cableSvg');if(!svg)return;svg.innerHTML='';for(const l of sim.links){const a=getPortCenter(l.a),b=getPortCenter(l.b);if(!a||!b)continue;const mx=(a.x+b.x)/2,p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M ${a.x} ${a.y} C ${mx} ${a.y+50}, ${mx} ${b.y+50}, ${b.x} ${b.y}`);p.setAttribute('class',`cable-line ${l.cable==='console'?'console':''}`);p.dataset.link=l.id;svg.appendChild(p)}if(packetAnimation)animatePacket(packetAnimation)}
 function animatePacket(info){const svg=$('#cableSvg'),pair=info?.path?.slice(0,2);if(!svg||!pair||pair.length<2)return;const link=sim.links.find(l=>(l.a.startsWith(pair[0]+':')&&l.b.startsWith(pair[1]+':'))||(l.b.startsWith(pair[0]+':')&&l.a.startsWith(pair[1]+':')));if(!link)return;const path=svg.querySelector(`[data-link="${link.id}"]`);if(!path)return;const c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('r','7');c.setAttribute('class','packet-dot');svg.appendChild(c);let start;function tick(t){start??=t;const u=Math.min(1,(t-start)/1050),pt=path.getPointAtLength(path.getTotalLength()*u);c.setAttribute('cx',pt.x);c.setAttribute('cy',pt.y);if(u<1)requestAnimationFrame(tick);else c.remove()}requestAnimationFrame(tick);packetAnimation=null}
 
-function ensurePanels(){if(!panels)panels=createPanels({sim,catalog:DEVICE_CATALOG,selected:()=>selectedDevice?sim.getDevice(selectedDevice):null,tab:()=>inspectorTab,setTab:t=>inspectorTab=t,closeInspect:()=>{selectedDevice=null;panels.renderInspector();renderStage()},toast,record,toggleTerminal,terminalOpen:()=>terminalOpen,runCommand});return panels}
+function ensurePanels(){if(!panels)panels=createPanels({sim,catalog:DEVICE_CATALOG,selected:()=>selectedDevice?sim.getDevice(selectedDevice):null,tab:()=>inspectorTab,setTab:t=>inspectorTab=t,closeInspect:()=>{selectedDevice=null;$$('.lab-device').forEach(el=>el.classList.remove('selected'));panels.renderInspector();renderTerminal()},toast,record,toggleTerminal,terminalOpen:()=>terminalOpen,runCommand});return panels}
 function renderInspector(){ensurePanels().renderInspector()}
 function renderTerminal(){ensurePanels().renderTerminal()}
 function toggleTerminal(force){terminalOpen=force??!terminalOpen;if(terminalOpen&&!selectedDevice){toast('Select a device first. The terminal belongs to the device you are operating.');terminalOpen=false}renderTerminal();if(terminalOpen&&selectedDevice)record('terminal',sim.getDevice(selectedDevice).type)}

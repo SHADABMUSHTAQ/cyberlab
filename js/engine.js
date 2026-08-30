@@ -129,8 +129,11 @@ export class SimulationEngine{
     const path = this.pathBetween(srcId, dstId);
     if (!path) return {ok:false, reason:'No physical path exists between the devices.'};
 
-    const dstIpConf = this.getIp(dstId) || this.getIp(`${dstId}:eth0`) || this.getIp(`${dstId}:g0/0`);
-    const sameSub = this.sameSubnet(srcIpConf.ip, targetIp, srcIpConf.mask, dstIpConf.mask || srcIpConf.mask);
+    let dstIpConf = this.getIp(dstId);
+    if (dstIpConf.ip === 'Not configured') dstIpConf = this.getIp(`${dstId}:eth0`);
+    if (dstIpConf.ip === 'Not configured') dstIpConf = this.getIp(`${dstId}:g0/0`);
+    const dstMask = (dstIpConf.mask && dstIpConf.mask !== '—') ? dstIpConf.mask : srcIpConf.mask;
+    const sameSub = this.sameSubnet(srcIpConf.ip, targetIp, srcIpConf.mask, dstMask);
     
     let needsRouter = !sameSub;
     let hasRouter = false;
@@ -371,7 +374,7 @@ export class CLIEngine {
 
     if (lower === 'show running-config') return {text: this.getRunningConfig(deviceId)};
 
-    return {text: `% Invalid input detected at '^' marker.`};
+    return {text: `% '${cmd}' is not available in this lesson yet.\nType help to see useful commands for ${d.name}.`};
   }
 
   getRunningConfig(deviceId) {
