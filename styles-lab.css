@@ -1262,33 +1262,27 @@
 }
 
 .teardown-view-container {
-  padding: 24px 0;
+  padding: 18px 0;
   display: flex;
   justify-content: center;
-  perspective: 1000px;
-}
-.chassis-viewer {
   width: 100%;
-  max-width: 860px;
-  background: #090e0c;
+}
+.chassis-viewer-svg-wrap {
+  width: 100%;
+  max-width: 880px;
+  background: #080d0b;
   border-radius: 12px;
-  border: 2px solid #21352c;
-  padding: 20px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-}
-
-/* Photorealistic Chassis Base */
-.photorealistic-chassis {
-  position: relative;
-  width: 100%;
-  min-height: 100px;
-  background: linear-gradient(180deg, #384941 0%, #1f2c26 50%, #131c18 100%);
-  border: 2px solid #0e1512;
-  border-radius: 4px;
-  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid #1f3329;
+  padding: 12px 14px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: center;
-  padding: 12px 18px;
+  justify-content: center;
+}
+.chassis-vector-svg {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  display: block;
 }
 
 .chassis-rack-ear {

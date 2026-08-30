@@ -378,7 +378,7 @@ export function createPanels(ctx) {
   }
 
   // ==========================================================================
-  // PHOTOREALISTIC HARDWARE TEARDOWN & 360° INSPECTION MODAL
+  // PHOTOREALISTIC RESPONSIVE HARDWARE TEARDOWN MODAL
   // ==========================================================================
   function openTeardownModal(d) {
     const modalRoot = $('#modalRoot');
@@ -404,9 +404,9 @@ export function createPanels(ctx) {
             </div>
           </div>
 
-          <div class="teardown-view-container ${currentSide}">
-            <div class="chassis-viewer">
-              ${renderChassisGraphic(d, currentSide)}
+          <div class="teardown-view-container">
+            <div class="chassis-viewer-svg-wrap">
+              ${renderChassisSVG(d, currentSide)}
             </div>
           </div>
 
@@ -414,7 +414,7 @@ export function createPanels(ctx) {
             <div class="teardown-spec-card">
               <h4>Engineering Datasheet</h4>
               <div class="spec-grid">
-                ${Object.entries(cat.specs).slice(0, 6).map(([k, v]) => `
+                ${Object.entries(cat.specs).map(([k, v]) => `
                   <div class="spec"><small>${k}</small><b>${v}</b></div>
                 `).join('')}
               </div>
@@ -459,213 +459,252 @@ export function createPanels(ctx) {
     renderTeardown();
   }
 
-  function renderChassisGraphic(d, side) {
+  // 100% Scalable Vector Hardware Faceplate Graphics
+  function renderChassisSVG(d, side) {
     if (d.type === 'switch') {
       if (side === 'front') {
         return `
-        <div class="photorealistic-chassis switch-front">
-          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
-          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
-          <div class="switch-front-panel">
-            <div class="panel-left-block">
-              <div class="brand-silkscreen">CYBERLAB CATALYST 2400-G</div>
-              <div class="mode-led-block">
-                <button class="mode-btn">MODE</button>
-                <div class="mode-leds">
-                  <span><i></i>STAT</span><span><i></i>SPEED</span><span><i></i>DUPLEX</span><span><i></i>PoE</span>
-                </div>
-              </div>
-            </div>
-            <div class="rj45-bank-container">
-              <div class="rj45-block bank-1">
-                <span class="block-label">PORTS 1–12 (1000BASE-T)</span>
-                <div class="rj45-grid">
-                  ${Array.from({ length: 12 }, (_, i) => `
-                    <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, `gi0/${i + 1}`) ? 'link-active' : ''}">
-                      <div class="rj45-leds"><span class="led-g"></span><span class="led-a"></span></div>
-                      <div class="rj45-jack"><div class="pins"></div></div>
-                      <small>${i + 1}</small>
-                    </div>`).join('')}
-                </div>
-              </div>
-              <div class="rj45-block bank-2">
-                <span class="block-label">PORTS 13–24 (PoE+ 802.3at)</span>
-                <div class="rj45-grid">
-                  ${Array.from({ length: 12 }, (_, i) => `
-                    <div class="realistic-rj45">
-                      <div class="rj45-leds"><span class="led-g"></span><span class="led-a"></span></div>
-                      <div class="rj45-jack"><div class="pins"></div></div>
-                      <small>${i + 13}</small>
-                    </div>`).join('')}
-                </div>
-              </div>
-            </div>
-            <div class="sfp-uplink-block">
-              <span class="block-label">10G SFP+ UPLINKS</span>
-              <div class="sfp-cages">
-                <div class="sfp-cage"><span class="sfp-latch"></span><small>25G</small></div>
-                <div class="sfp-cage"><span class="sfp-latch"></span><small>26G</small></div>
-              </div>
-              <div class="console-jack"><span class="console-label">CONSOLE</span><div class="rj45-jack console"></div></div>
-            </div>
-          </div>
-        </div>`;
+        <svg viewBox="0 0 960 140" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="chassisSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2d3b35"/><stop offset="50%" stop-color="#1b2521"/><stop offset="100%" stop-color="#0f1513"/></linearGradient>
+            <linearGradient id="earSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3d4e46"/><stop offset="100%" stop-color="#1a2420"/></linearGradient>
+          </defs>
+          <!-- Left/Right Rackmount Ears -->
+          <rect x="0" y="0" width="22" height="140" rx="3" fill="url(#earSteel)" stroke="#090d0b"/>
+          <circle cx="11" cy="20" r="5" fill="#506159" stroke="#1c2420"/><circle cx="11" cy="120" r="5" fill="#506159" stroke="#1c2420"/>
+          <rect x="938" y="0" width="22" height="140" rx="3" fill="url(#earSteel)" stroke="#090d0b"/>
+          <circle cx="949" cy="20" r="5" fill="#506159" stroke="#1c2420"/><circle cx="949" cy="120" r="5" fill="#506159" stroke="#1c2420"/>
+          <!-- Main 19" Steel Chassis Faceplate -->
+          <rect x="22" y="8" width="916" height="124" rx="4" fill="url(#chassisSteel)" stroke="#0b100e" stroke-width="2"/>
+          <rect x="24" y="10" width="912" height="1" fill="#4d6157" opacity="0.6"/>
+          
+          <!-- Silkscreen Branding & Mode Section -->
+          <text x="40" y="38" fill="#d9ece2" font-size="12" font-weight="900" font-family="Arial, sans-serif" letter-spacing="1">CYBERLAB CATALYST 2400-G</text>
+          <text x="40" y="52" fill="#7d968b" font-size="9" font-family="Arial, sans-serif">24-PORT 1000BASE-T MANAGED ENTERPRISE SWITCH</text>
+          <rect x="40" y="70" width="46" height="20" rx="3" fill="#131e19" stroke="#364c40"/>
+          <text x="50" y="84" fill="#9db5aa" font-size="9" font-weight="800" font-family="Arial, sans-serif">MODE</text>
+          <circle cx="100" cy="80" r="3.5" fill="#22c55e"/><text x="108" y="83" fill="#8da498" font-size="8" font-family="Arial, sans-serif">STAT</text>
+          <circle cx="138" cy="80" r="3.5" fill="#22c55e"/><text x="146" y="83" fill="#8da498" font-size="8" font-family="Arial, sans-serif">SPEED</text>
+          <circle cx="186" cy="80" r="3.5" fill="#22c55e"/><text x="194" y="83" fill="#8da498" font-size="8" font-family="Arial, sans-serif">DUPLEX</text>
+
+          <!-- Port Bank 1 (Ports 1-12) -->
+          <rect x="245" y="24" width="285" height="92" rx="4" fill="#0c1310" stroke="#25352c"/>
+          <text x="255" y="38" fill="#6d887a" font-size="8" font-weight="900" font-family="Arial, sans-serif" letter-spacing="0.5">PORTS 1–12 (1000BASE-T)</text>
+          ${Array.from({ length: 6 }, (_, i) => {
+            const upTop = ctx.sim.linkFor(d.id, `gi0/${i * 2 + 1}`);
+            const upBot = ctx.sim.linkFor(d.id, `gi0/${i * 2 + 2}`);
+            return `
+            <!-- Top Port ${i * 2 + 1} -->
+            <g transform="translate(${255 + i * 44}, 44)">
+              <circle cx="6" cy="4" r="2" fill="${upTop ? '#22c55e' : '#37473f'}"/>
+              <rect x="0" y="8" width="24" height="20" rx="2" fill="#050807" stroke="#486053"/>
+              <text x="12" y="35" fill="#8ca598" font-size="7" font-weight="700" text-anchor="middle" font-family="Arial">${i * 2 + 1}</text>
+            </g>
+            <!-- Bottom Port ${i * 2 + 2} -->
+            <g transform="translate(${255 + i * 44}, 82)">
+              <circle cx="6" cy="4" r="2" fill="${upBot ? '#22c55e' : '#37473f'}"/>
+              <rect x="0" y="8" width="24" height="20" rx="2" fill="#050807" stroke="#486053"/>
+              <text x="12" y="35" fill="#8ca598" font-size="7" font-weight="700" text-anchor="middle" font-family="Arial">${i * 2 + 2}</text>
+            </g>`;
+          }).join('')}
+
+          <!-- Port Bank 2 (Ports 13-24) -->
+          <rect x="545" y="24" width="285" height="92" rx="4" fill="#0c1310" stroke="#25352c"/>
+          <text x="555" y="38" fill="#6d887a" font-size="8" font-weight="900" font-family="Arial, sans-serif" letter-spacing="0.5">PORTS 13–24 (PoE+ 802.3at)</text>
+          ${Array.from({ length: 6 }, (_, i) => `
+            <g transform="translate(${555 + i * 44}, 44)">
+              <circle cx="6" cy="4" r="2" fill="#37473f"/>
+              <rect x="0" y="8" width="24" height="20" rx="2" fill="#050807" stroke="#486053"/>
+              <text x="12" y="35" fill="#8ca598" font-size="7" font-weight="700" text-anchor="middle" font-family="Arial">${i * 2 + 13}</text>
+            </g>
+            <g transform="translate(${555 + i * 44}, 82)">
+              <circle cx="6" cy="4" r="2" fill="#37473f"/>
+              <rect x="0" y="8" width="24" height="20" rx="2" fill="#050807" stroke="#486053"/>
+              <text x="12" y="35" fill="#8ca598" font-size="7" font-weight="700" text-anchor="middle" font-family="Arial">${i * 2 + 14}</text>
+            </g>`).join('')}
+
+          <!-- SFP+ Uplinks & Console -->
+          <rect x="840" y="24" width="88" height="92" rx="4" fill="#0c1310" stroke="#25352c"/>
+          <text x="846" y="38" fill="#718d7f" font-size="7.5" font-weight="900" font-family="Arial">10G SFP+ / CON</text>
+          <rect x="846" y="46" width="22" height="26" rx="2" fill="#141f19" stroke="#718d7f"/>
+          <text x="857" y="62" fill="#a4beb1" font-size="6" text-anchor="middle" font-family="Arial">25G</text>
+          <rect x="874" y="46" width="22" height="26" rx="2" fill="#141f19" stroke="#718d7f"/>
+          <text x="885" y="62" fill="#a4beb1" font-size="6" text-anchor="middle" font-family="Arial">26G</text>
+          <!-- Console -->
+          <rect x="846" y="80" width="50" height="26" rx="2" fill="#050807" stroke="#92751f"/>
+          <text x="871" y="96" fill="#f2c94c" font-size="6.5" font-weight="900" text-anchor="middle" font-family="Arial">CONSOLE</text>
+        </svg>`;
       } else {
         return `
-        <div class="photorealistic-chassis switch-rear">
-          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
-          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
-          <div class="switch-rear-panel">
-            <div class="fan-tray-block">
-              <span class="block-label">REDUNDANT COOLING FANS</span>
-              <div class="fan-grilles">
-                <div class="fan-grille"><div class="fan-blades"></div></div>
-                <div class="fan-grille"><div class="fan-blades"></div></div>
-                <div class="fan-grille"><div class="fan-blades"></div></div>
-              </div>
-            </div>
-            <div class="grounding-lug-block">
-              <span class="ground-symbol">⏚</span>
-              <div class="ground-lugs"><span></span><span></span></div>
-            </div>
-            <div class="psu-block-container">
-              <div class="hot-swap-psu psu-1">
-                <span class="psu-label">PSU 1 (350W AC)</span>
-                <div class="psu-handle"></div>
-                <div class="c14-inlet"><span></span><span></span><span></span></div>
-                <span class="psu-led">● OK</span>
-              </div>
-              <div class="hot-swap-psu psu-2">
-                <span class="psu-label">PSU 2 (350W AC)</span>
-                <div class="psu-handle"></div>
-                <div class="c14-inlet"><span></span><span></span><span></span></div>
-                <span class="psu-led">● OK</span>
-              </div>
-            </div>
-          </div>
-        </div>`;
+        <svg viewBox="0 0 960 140" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="chassisRear" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#24302a"/><stop offset="100%" stop-color="#121815"/></linearGradient>
+          </defs>
+          <rect x="0" y="0" width="22" height="140" rx="3" fill="#2d3a33" stroke="#090d0b"/>
+          <rect x="938" y="0" width="22" height="140" rx="3" fill="#2d3a33" stroke="#090d0b"/>
+          <rect x="22" y="8" width="916" height="124" rx="4" fill="url(#chassisRear)" stroke="#0b100e" stroke-width="2"/>
+
+          <!-- 3x Variable Speed Fans -->
+          <text x="45" y="34" fill="#718d7f" font-size="9" font-weight="900" font-family="Arial">REDUNDANT COOLING FAN EXHAUST</text>
+          ${Array.from({ length: 3 }, (_, i) => `
+            <g transform="translate(${45 + i * 85}, 46)">
+              <circle cx="36" cy="36" r="34" fill="#080c0a" stroke="#2e4237" stroke-width="2"/>
+              <circle cx="36" cy="36" r="24" fill="none" stroke="#486052" stroke-width="2" stroke-dasharray="6,4"/>
+              <circle cx="36" cy="36" r="6" fill="#1b2520"/>
+            </g>`).join('')}
+
+          <!-- Grounding Terminal -->
+          <g transform="translate(340, 50)">
+            <text x="0" y="16" fill="#a4beb1" font-size="14">⏚</text>
+            <circle cx="28" cy="12" r="4" fill="#b45309" stroke="#222"/>
+            <circle cx="28" cy="32" r="4" fill="#b45309" stroke="#222"/>
+            <text x="40" y="24" fill="#6d887a" font-size="8" font-family="Arial">SAFETY GROUND</text>
+          </g>
+
+          <!-- Dual Hot-Swap Power Supplies -->
+          <g transform="translate(500, 24)">
+            <!-- PSU 1 -->
+            <rect x="0" y="0" width="200" height="92" rx="4" fill="#0d1411" stroke="#364c40"/>
+            <text x="12" y="20" fill="#a4beb1" font-size="8.5" font-weight="800" font-family="Arial">PSU 1 (350W AC 100-240V)</text>
+            <rect x="12" y="32" width="28" height="8" rx="2" fill="#c2410c"/>
+            <rect x="50" y="32" width="34" height="24" rx="2" fill="#050807" stroke="#4a6357"/>
+            <circle cx="100" cy="44" r="3.5" fill="#22c55e"/><text x="108" y="47" fill="#22c55e" font-size="8" font-family="Arial">● OK</text>
+
+            <!-- PSU 2 -->
+            <rect x="215" y="0" width="200" height="92" rx="4" fill="#0d1411" stroke="#364c40"/>
+            <text x="227" y="20" fill="#a4beb1" font-size="8.5" font-weight="800" font-family="Arial">PSU 2 (350W AC 100-240V)</text>
+            <rect x="227" y="32" width="28" height="8" rx="2" fill="#c2410c"/>
+            <rect x="265" y="32" width="34" height="24" rx="2" fill="#050807" stroke="#4a6357"/>
+            <circle cx="315" cy="44" r="3.5" fill="#22c55e"/><text x="323" y="47" fill="#22c55e" font-size="8" font-family="Arial">● OK</text>
+          </g>
+        </svg>`;
       }
     }
 
     if (d.type === 'router') {
       if (side === 'front') {
         return `
-        <div class="photorealistic-chassis router-front">
-          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
-          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
-          <div class="router-front-panel">
-            <div class="panel-left-block">
-              <div class="brand-silkscreen">CYBERLAB MODULAR ROUTER 4331</div>
-              <div class="sys-led-array"><span>PWR <i>●</i></span><span>SYS <i>●</i></span><span>ACT <i>●</i></span></div>
-            </div>
-            <div class="nim-slot-container">
-              <div class="nim-slot slot-0">
-                <span class="nim-label">NIM SLOT 0</span>
-                <div class="thumbscrew left"></div>
-                <div class="blank-plate">BLANK COVER</div>
-                <div class="thumbscrew right"></div>
-              </div>
-              <div class="nim-slot slot-1">
-                <span class="nim-label">NIM SLOT 1</span>
-                <div class="thumbscrew left"></div>
-                <div class="blank-plate">BLANK COVER</div>
-                <div class="thumbscrew right"></div>
-              </div>
-            </div>
-            <div class="router-port-block">
-              <span class="block-label">ROUTED GIGABIT INTERFACES</span>
-              <div class="router-ge-ports">
-                <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, 'g0/0') ? 'link-active' : ''}"><div class="rj45-jack"></div><small>GE0/0/0</small></div>
-                <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, 'g0/1') ? 'link-active' : ''}"><div class="rj45-jack"></div><small>GE0/0/1</small></div>
-                <div class="realistic-rj45 ${ctx.sim.linkFor(d.id, 'g0/2') ? 'link-active' : ''}"><div class="rj45-jack"></div><small>GE0/0/2</small></div>
-              </div>
-              <div class="mgmt-ports">
-                <div class="realistic-rj45 console"><div class="rj45-jack console"></div><small>CON</small></div>
-                <div class="realistic-rj45 console"><div class="rj45-jack console"></div><small>AUX</small></div>
-              </div>
-            </div>
-          </div>
-        </div>`;
+        <svg viewBox="0 0 960 140" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="routerSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2d3b35"/><stop offset="100%" stop-color="#141d19"/></linearGradient></defs>
+          <rect x="0" y="0" width="22" height="140" rx="3" fill="#2d3a33"/>
+          <rect x="938" y="0" width="22" height="140" rx="3" fill="#2d3a33"/>
+          <rect x="22" y="8" width="916" height="124" rx="4" fill="url(#routerSteel)" stroke="#0b100e" stroke-width="2"/>
+
+          <text x="40" y="38" fill="#d9ece2" font-size="12" font-weight="900" font-family="Arial">CYBERLAB MODULAR ROUTER 4331</text>
+          <text x="40" y="52" fill="#7d968b" font-size="9" font-family="Arial">ENTERPRISE MULTI-SERVICE EDGE ROUTER</text>
+          <circle cx="45" cy="75" r="3" fill="#22c55e"/><text x="52" y="78" fill="#8da498" font-size="7.5" font-family="Arial">PWR</text>
+          <circle cx="85" cy="75" r="3" fill="#22c55e"/><text x="92" y="78" fill="#8da498" font-size="7.5" font-family="Arial">SYS</text>
+          <circle cx="125" cy="75" r="3" fill="#22c55e"/><text x="132" y="78" fill="#8da498" font-size="7.5" font-family="Arial">ACT</text>
+
+          <!-- 2x NIM Expansion Slots -->
+          <rect x="220" y="24" width="260" height="92" rx="4" fill="#0a100d" stroke="#2e4438"/>
+          <text x="232" y="40" fill="#6d887a" font-size="8" font-weight="900" font-family="Arial">NIM SLOT 0 (EXPANSION MODULE)</text>
+          <circle cx="235" cy="70" r="4" fill="#718d7f"/><rect x="245" y="55" width="210" height="30" rx="2" fill="#131e19"/><circle cx="465" cy="70" r="4" fill="#718d7f"/>
+
+          <!-- 3x Routed GE Interfaces + Console/AUX -->
+          <rect x="500" y="24" width="425" height="92" rx="4" fill="#0a100d" stroke="#2e4438"/>
+          <text x="512" y="40" fill="#6d887a" font-size="8" font-weight="900" font-family="Arial">ROUTED GIGABIT INTERFACES & MANAGEMENT</text>
+          ${['GE0/0/0 (LAN)', 'GE0/0/1 (WAN)', 'GE0/0/2 (DMZ)'].map((l, i) => `
+            <g transform="translate(${515 + i * 75}, 50)">
+              <circle cx="8" cy="4" r="2.5" fill="#22c55e"/>
+              <rect x="0" y="10" width="30" height="24" rx="2" fill="#050807" stroke="#486053"/>
+              <text x="15" y="44" fill="#8da498" font-size="7" font-weight="700" text-anchor="middle" font-family="Arial">${l}</text>
+            </g>`).join('')}
+
+          <g transform="translate(${755}, 50)">
+            <rect x="0" y="10" width="30" height="24" rx="2" fill="#050807" stroke="#92751f"/>
+            <text x="15" y="44" fill="#f2c94c" font-size="7" font-weight="900" text-anchor="middle" font-family="Arial">CON</text>
+          </g>
+          <g transform="translate(${800}, 50)">
+            <rect x="0" y="10" width="30" height="24" rx="2" fill="#050807" stroke="#92751f"/>
+            <text x="15" y="44" fill="#f2c94c" font-size="7" font-weight="900" text-anchor="middle" font-family="Arial">AUX</text>
+          </g>
+        </svg>`;
       } else {
         return `
-        <div class="photorealistic-chassis router-rear">
-          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
-          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
-          <div class="router-rear-panel">
-            <div class="fan-grilles"><div class="fan-grille"><div class="fan-blades"></div></div></div>
-            <div class="grounding-lug-block"><span class="ground-symbol">⏚</span><div class="ground-lugs"><span></span><span></span></div></div>
-            <div class="ac-power-entry">
-              <div class="rocker-switch on"><span>I</span><span>O</span></div>
-              <div class="c14-inlet"><span></span><span></span><span></span></div>
-              <small>100–240V ~ 50/60Hz 1.5A</small>
-            </div>
-          </div>
-        </div>`;
+        <svg viewBox="0 0 960 140" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="22" height="140" rx="3" fill="#2d3a33"/>
+          <rect x="938" y="0" width="22" height="140" rx="3" fill="#2d3a33"/>
+          <rect x="22" y="8" width="916" height="124" rx="4" fill="#141d19" stroke="#0b100e" stroke-width="2"/>
+          <circle cx="100" cy="70" r="35" fill="#080c0a" stroke="#2e4237" stroke-width="2"/>
+          <text x="155" y="75" fill="#718d7f" font-size="9" font-family="Arial">SYSTEM EXHAUST FAN</text>
+          <rect x="680" y="35" width="16" height="30" fill="#c2410c"/>
+          <rect x="710" y="35" width="40" height="30" rx="2" fill="#050807" stroke="#4a6357"/>
+          <text x="680" y="85" fill="#a4beb1" font-size="8" font-family="Arial">POWER SWITCH (100–240V ~ 1.5A)</text>
+        </svg>`;
       }
     }
 
     if (d.type === 'server') {
       if (side === 'front') {
         return `
-        <div class="photorealistic-chassis server-front-2u">
-          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
-          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
-          <div class="server-bezel">
-            <div class="server-brand-badge">CYBERLAB POWEREDGE R750 (2U)</div>
-            <div class="sas-drive-bay-grid">
-              ${Array.from({ length: 8 }, (_, i) => `
-                <div class="sas-drive-caddy">
-                  <div class="caddy-handle"></div>
-                  <div class="drive-leds"><span class="led-g"></span><span class="led-a"></span></div>
-                  <small>BAY ${i}</small>
-                </div>`).join('')}
-            </div>
-            <div class="server-control-panel">
-              <button class="server-power-btn on"><div class="power-icon">⏻</div></button>
-              <div class="server-diag-ports"><div class="vga-port"></div><div class="usb-port"></div></div>
-            </div>
-          </div>
-        </div>`;
+        <svg viewBox="0 0 960 180" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="serverBezel" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#24332c"/><stop offset="100%" stop-color="#101814"/></linearGradient></defs>
+          <rect x="0" y="0" width="22" height="180" rx="3" fill="#2d3a33"/>
+          <rect x="938" y="0" width="22" height="180" rx="3" fill="#2d3a33"/>
+          <rect x="22" y="6" width="916" height="168" rx="4" fill="url(#serverBezel)" stroke="#0b100e" stroke-width="2"/>
+          <text x="40" y="32" fill="#d9ece2" font-size="11" font-weight="900" font-family="Arial">CYBERLAB POWEREDGE R750 (2U ENTERPRISE RACK SERVER)</text>
+
+          <!-- 8x Hot-Swap SAS Caddies -->
+          ${Array.from({ length: 8 }, (_, i) => `
+            <g transform="translate(${40 + i * 92}, 46)">
+              <rect x="0" y="0" width="86" height="108" rx="3" fill="#080c0a" stroke="#25352c"/>
+              <rect x="8" y="10" width="70" height="10" rx="2" fill="#1b2520" stroke="#364c40"/>
+              <circle cx="15" cy="30" r="2.5" fill="#22c55e"/><circle cx="25" cy="30" r="2.5" fill="#f59e0b"/>
+              <text x="43" y="80" fill="#6d887a" font-size="8" font-weight="800" text-anchor="middle" font-family="Arial">SAS SSD ${i}</text>
+              <text x="43" y="92" fill="#4d6157" font-size="7" text-anchor="middle" font-family="Arial">1.92TB</text>
+            </g>`).join('')}
+
+          <!-- Power Button & Diagnostic Panel -->
+          <g transform="translate(800, 46)">
+            <circle cx="20" cy="20" r="12" fill="#13221b" stroke="#22c55e" stroke-width="2"/>
+            <text x="20" y="24" fill="#22c55e" font-size="10" text-anchor="middle">⏻</text>
+            <rect x="0" y="44" width="40" height="18" rx="2" fill="#050807" stroke="#364c40"/>
+            <text x="20" y="56" fill="#8da498" font-size="6" text-anchor="middle" font-family="Arial">VGA/USB</text>
+          </g>
+        </svg>`;
       } else {
         return `
-        <div class="photorealistic-chassis server-rear-2u">
-          <div class="chassis-rack-ear left"><div class="screw"></div><div class="screw"></div></div>
-          <div class="chassis-rack-ear right"><div class="screw"></div><div class="screw"></div></div>
-          <div class="server-rear-panel">
-            <div class="pcie-slots">
-              <div class="quad-nic-block">
-                <span class="block-label">QUAD 10GbE BASE-T NIC</span>
-                <div class="nic-ports">
-                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 1</small></div>
-                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 2</small></div>
-                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 3</small></div>
-                  <div class="realistic-rj45"><div class="rj45-jack"></div><small>NIC 4</small></div>
-                </div>
-              </div>
-              <div class="idrac-mgmt-port">
-                <div class="realistic-rj45"><div class="rj45-jack"></div><small>iDRAC/IPMI</small></div>
-              </div>
-            </div>
-            <div class="dual-server-psus">
-              <div class="hot-swap-psu"><div class="psu-handle"></div><div class="c14-inlet"><span></span><span></span><span></span></div><small>750W TITANIUM</small></div>
-              <div class="hot-swap-psu"><div class="psu-handle"></div><div class="c14-inlet"><span></span><span></span><span></span></div><small>750W TITANIUM</small></div>
-            </div>
-          </div>
-        </div>`;
+        <svg viewBox="0 0 960 180" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+          <rect x="22" y="6" width="916" height="168" rx="4" fill="#101814" stroke="#0b100e" stroke-width="2"/>
+          <text x="40" y="32" fill="#d9ece2" font-size="11" font-weight="900" font-family="Arial">REAR I/O & POWER ARCHITECTURE</text>
+          <!-- Quad NIC + iDRAC -->
+          <rect x="40" y="46" width="360" height="108" rx="4" fill="#080c0a" stroke="#25352c"/>
+          <text x="52" y="64" fill="#718d7f" font-size="8.5" font-weight="900" font-family="Arial">QUAD 10GbE BASE-T NIC + IPMI/iDRAC</text>
+          ${Array.from({ length: 4 }, (_, i) => `
+            <g transform="translate(${55 + i * 55}, 80)">
+              <rect x="0" y="0" width="28" height="24" rx="2" fill="#050807" stroke="#486053"/>
+              <text x="14" y="36" fill="#8da498" font-size="6.5" text-anchor="middle" font-family="Arial">NIC ${i + 1}</text>
+            </g>`).join('')}
+          <g transform="translate(290, 80)">
+            <rect x="0" y="0" width="28" height="24" rx="2" fill="#050807" stroke="#92751f"/>
+            <text x="14" y="36" fill="#f2c94c" font-size="6.5" font-weight="800" text-anchor="middle" font-family="Arial">iDRAC</text>
+          </g>
+
+          <!-- Dual 750W Titanium PSUs -->
+          <g transform="translate(540, 46)">
+            <rect x="0" y="0" width="170" height="108" rx="4" fill="#0d1411" stroke="#364c40"/>
+            <text x="12" y="24" fill="#a4beb1" font-size="8" font-weight="800" font-family="Arial">PSU 1 (750W TITANIUM)</text>
+            <rect x="12" y="40" width="24" height="10" rx="2" fill="#c2410c"/>
+            <rect x="44" y="40" width="34" height="26" rx="2" fill="#050807" stroke="#4a6357"/>
+
+            <rect x="190" y="0" width="170" height="108" rx="4" fill="#0d1411" stroke="#364c40"/>
+            <text x="202" y="24" fill="#a4beb1" font-size="8" font-weight="800" font-family="Arial">PSU 2 (750W TITANIUM)</text>
+            <rect x="202" y="40" width="24" height="10" rx="2" fill="#c2410c"/>
+            <rect x="234" y="40" width="34" height="26" rx="2" fill="#050807" stroke="#4a6357"/>
+          </g>
+        </svg>`;
       }
     }
 
-    // Generic Photorealistic Front/Rear
+    // Workstation PC, Firewall & Default
     return `
-    <div class="photorealistic-chassis generic-chassis">
-      <div class="generic-panel">
-        <h3>${cat.name} (${side.toUpperCase()} VIEW)</h3>
-        <p>Enterprise physical hardware engineering representation.</p>
-        <div class="spec-grid" style="margin-top:16px">
-          ${Object.entries(cat.specs).map(([k, v]) => `<div class="spec"><small>${k}</small><b>${v}</b></div>`).join('')}
-        </div>
-      </div>
-    </div>`;
+    <svg viewBox="0 0 960 140" class="chassis-vector-svg" xmlns="http://www.w3.org/2000/svg">
+      <rect x="22" y="8" width="916" height="124" rx="4" fill="#141d19" stroke="#0b100e" stroke-width="2"/>
+      <text x="40" y="45" fill="#d9ece2" font-size="14" font-weight="900" font-family="Arial">${cat.name.toUpperCase()} (${side.toUpperCase()} VIEW)</text>
+      <text x="40" y="70" fill="#718d7f" font-size="10" font-family="Arial">Form Factor: ${cat.specs['Form Factor'] || 'Enterprise Appliance Chassis'}</text>
+      <text x="40" y="95" fill="#a4beb1" font-size="10" font-family="Arial">Ports: ${cat.ports.map(p => p.label).join(', ')}</text>
+    </svg>`;
   }
 
   function setCapturedPacket(pkt) {
